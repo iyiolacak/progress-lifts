@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";;
 import { ArrowUpRight, KeyPlus, Link } from "iconoir-react/regular";
 import { useTranslations } from "next-intl";
-import { useAppSettings } from "@/app/store/appPreferences";
+import { useAppSettings } from "@/localdb/store/appPreferences";
 
 interface ApiKeyFormProps {
   onSuccess: () => void;

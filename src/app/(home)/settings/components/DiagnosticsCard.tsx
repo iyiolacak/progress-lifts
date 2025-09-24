@@ -11,7 +11,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { useTranslations } from "next-intl";
-import { useAppSettings } from "@/app/store/appPreferences";
+import { useAppSettings } from "@/localdb/store/appPreferences";
 
 export function DiagnosticsCard() {
   const t = useTranslations("SettingsPage");

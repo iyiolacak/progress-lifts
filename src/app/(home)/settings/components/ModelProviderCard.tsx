@@ -18,7 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Lock } from "iconoir-react/regular";
 import { useTranslations } from "next-intl";
-import { useAppSettings } from "@/app/store/appPreferences";
+import { useAppSettings } from "@/localdb/store/appPreferences";
 import {
   Dialog,
   DialogContent,

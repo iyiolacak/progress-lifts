@@ -4,7 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { SfxProvider } from "@/lib/sfx";
 import ApiKeyPrompt from "@/components/ApiKeyDrawer/ApiKeyPrompt";
 import { NextIntlClientProvider } from 'next-intl';
-import { useAppSettings } from './store/appPreferences';
+import { useAppSettings } from '../localdb/store/appPreferences';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 

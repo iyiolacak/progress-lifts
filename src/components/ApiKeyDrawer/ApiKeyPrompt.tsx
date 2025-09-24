@@ -13,7 +13,7 @@ import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import ApiKeyForm from "./ApiKeyForm";
 import Image from "next/image";
-import { useAppSettings } from "@/app/store/appPreferences";
+import { useAppSettings } from "@/localdb/store/appPreferences";
 import { useTranslations } from "next-intl";
 
 export interface ApiKeyPromptProps {

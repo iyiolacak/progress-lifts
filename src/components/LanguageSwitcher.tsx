@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useAppSettings } from '@/app/store/appPreferences';
+import { useAppSettings } from '@/localdb/store/appPreferences';
 
 
 const FLAG_MAP: Record<string, string> = {
