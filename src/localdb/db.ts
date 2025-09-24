@@ -40,12 +40,15 @@ export const entriesCollection = await db.addCollections({
         });
 
         await db.collections.jobs.statics.createJob(id);
-        
+
         return doc;
       },
-      async getLastFiveIds(this: RxCollection<EntryDoc>): Promise<string[]> {
+      async getLastFiveIds(
+        this: RxCollection<EntryDoc>,
+        beforeTs: number
+      ): Promise<string[]> {
         const docs = await this.find({
-          selector: {},
+          selector: { createdAt: { $lte: beforeTs } },
           sort: [{ createdAt: "desc" }, { id: "desc" }],
           limit: 5,
         }).exec();
@@ -86,6 +89,8 @@ export const jobsCollection = await db.addCollections({
           createdAt: Date.now(),
           updatedAt: Date.now(),
         });
+
+        // TODO: Parse context content from ID to provide to the API(LLM service).
       },
     },
   },
