@@ -1,37 +1,41 @@
-import { RxJsonSchema } from "rxdb";
+import {
+  ExtractDocumentTypeFromTypedRxJsonSchema,
+  RxJsonSchema,
+  toTypedRxJsonSchema,
+} from "rxdb";
 
-export type EntryDoc = {
-  id: string;                       // primary
-  kind: "text" | "audio";
-  createdAt: number;                // epoch ms (canonical)
-  content: {
-    phaseA?: {
-      entryText?: string;
-      // Prefer RxDB attachments for binary audio; keep pointer only if needed.
-      audioAttachmentId?: string;
-    };
-    phaseB?: {
-      gainedXp?: number;
-      est_minutes_for_the_task?: number;
-      complexity?: number;
-      tags?: string[];
-      possibleMoodRegardingContext?: number; // 0..100
-      meta?: {                              // was metadata
-        raw?: string;                       // was metadata.metadata
-      };
-    };
-  };
-  givenContext: string[];           // last-5 IDs at insert time (frozen)
-  asyncControl?: {
-    enrichmentStatus?: "idle" | "queued" | "running" | "done" | "error";
-    enrichedAt?: string;            // ISO 8601
-    error?: string;
-  };
-  // Optional denormalization for tag search; consider a separate TagIndex collection instead.
-  tagsFlat?: string[];
-};
+// export type EntryDoc = {
+//   id: string;                       // primary
+//   kind: "text" | "audio";
+//   createdAt: number;                // epoch ms (canonical)
+//   content: {
+//     phaseA?: {
+//       entryText?: string;
+//       // Prefer RxDB attachments for binary audio; keep pointer only if needed.
+//       audioAttachmentId?: string;
+//     };
+//     phaseB?: {
+//       gainedXp?: number;
+//       est_minutes_for_the_task?: number;
+//       complexity?: number;
+//       tags?: string[];
+//       possibleMoodRegardingContext?: number; // 0..100
+//       meta?: {                              // was metadata
+//         raw?: string;                       // was metadata.metadata
+//       };
+//     };
+//   };
+//   givenContext: string[];           // last-5 IDs at insert time (frozen)
+//   asyncControl?: {
+//     enrichmentStatus?: "idle" | "queued" | "running" | "done" | "error";
+//     enrichedAt?: string;            // ISO 8601
+//     error?: string;
+//   };
+//   // Optional denormalization for tag search; consider a separate TagIndex collection instead.
+//   tagsFlat?: string[];
+// };
 
-export const entrySchema: RxJsonSchema<EntryDoc> = {
+export const entrySchemaLiteral = {
   title: "Entry",
   version: 0,
   primaryKey: "id",
@@ -95,6 +99,10 @@ export const entrySchema: RxJsonSchema<EntryDoc> = {
       type: "object",
       additionalProperties: false,
       properties: {
+        audioConvertingToEntryText: {
+          type: "string",
+          enum: ["processing", "done", "error"], // If entry is not an audio, this field is "done" by default.
+        },
         enrichmentStatus: {
           type: "string",
           enum: ["idle", "queued", "running", "done", "error"],
@@ -117,3 +125,12 @@ export const entrySchema: RxJsonSchema<EntryDoc> = {
     ["createdAt", "id"],
   ],
 } as const;
+
+const entrySchemaTyped = toTypedRxJsonSchema(entrySchemaLiteral);
+
+export type EntryDocType = ExtractDocumentTypeFromTypedRxJsonSchema<
+  typeof entrySchemaTyped
+>;
+export const entrySchema: RxJsonSchema<EntryDocType> = entrySchemaLiteral;
+
+export type AudioStatus = "processing" | "done" | "error";

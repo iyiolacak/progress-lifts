@@ -1,28 +1,32 @@
-import { RxJsonSchema } from "rxdb";
+import {
+  ExtractDocumentTypeFromTypedRxJsonSchema,
+  RxJsonSchema,
+  toTypedRxJsonSchema,
+} from "rxdb";
 
-export type JobDoc = {
-  id: string; // pk (uuid)
-  type: "processEntry"; // narrow with a union as you add more
-  entryId: string;
+// export type JobDoc = {
+//   id: string; // pk (uuid)
+//   type: "processEntry"; // narrow with a union as you add more
+//   entryId: string;
 
-  status: "pending" | "running" | "completed" | "failed";
-  priority?: number; // higher runs first (optional)
-  attempts: number; // how many times we tried
-  maxAttempts: number; // cap retries
+//   status: "pending" | "running" | "completed" | "failed";
+//   priority?: number; // higher runs first (optional)
+//   attempts: number; // how many times we tried
+//   maxAttempts: number; // cap retries
 
-  createdAt: number;
-  updatedAt: number;
+//   createdAt: number;
+//   updatedAt: number;
 
-  // lock/visibility timeout to avoid double work
-  lockedUntil?: number; // epoch ms; job is invisible while locked
+//   // lock/visibility timeout to avoid double work
+//   lockedUntil?: number; // epoch ms; job is invisible while locked
 
-  // backoff scheduling
-  scheduledAt?: number; // earliest time this job can run
+//   // backoff scheduling
+//   scheduledAt?: number; // earliest time this job can run
 
-  error?: string; // last error message (optional)
-};
+//   error?: string; // last error message (optional)
+// };
 
-export const jobSchema: RxJsonSchema<JobDoc> = {
+export const jobSchemaLiteral = {
   title: "Jobs",
   version: 0,
   primaryKey: "id",
@@ -66,3 +70,41 @@ export const jobSchema: RxJsonSchema<JobDoc> = {
     "entryId",
   ],
 } as const;
+
+const jobSchemaTyped = toTypedRxJsonSchema(jobSchemaLiteral);
+
+export type JobDocType = ExtractDocumentTypeFromTypedRxJsonSchema<
+  typeof jobSchemaTyped
+>;
+export const jobSchema: RxJsonSchema<JobDocType> = jobSchemaLiteral;
+
+export type EntryJob = {
+  type: "processEntry";
+  id: string;
+  createdAt: number;
+  entryId: string;
+  status: "pending";
+  attempts: number;
+  maxAttempts: number;
+  updatedAt: number;
+  priority?: number;
+  error?: string;
+  scheduledAt?: number;
+  lockedUntil?: number;
+};
+
+export const createEntryJobParams = (
+  entryId: string,
+  priority: number,
+  maxAttempts: number
+): EntryJob => ({
+  id: crypto.randomUUID(),
+  type: "processEntry",
+  entryId,
+  status: "pending",
+  priority,
+  attempts: 0,
+  maxAttempts,
+  createdAt: Date.now(),
+  updatedAt: Date.now(),
+});
