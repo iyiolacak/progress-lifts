@@ -1,4 +1,4 @@
-import { entrySchemaLiteral } from "@/localdb/schema/entry";
+import { AudioStatus, entrySchemaLiteral } from "@/localdb/schema/entry";
 import {
   addRxPlugin,
   createRxDatabase,
@@ -17,6 +17,7 @@ import {
   jobSchemaLiteral,
 } from "./schema/jobs";
 import { RxDBLeaderElectionPlugin } from "rxdb/plugins/leader-election";
+import { formatAbsoluteDate, formatTimeAgo } from "@/lib/utils";
 addRxPlugin(RxDBLeaderElectionPlugin);
 
 // Types
@@ -26,6 +27,12 @@ export type Collections = {
 };
 
 export type DB = RxDatabase<Collections>;
+
+type Options = {
+  relativeDate?: boolean;
+  locale?: string;
+  preserveInputOrder?: boolean; // if true, output follows `ids` order
+};
 
 const DATABASE_NAME = "local-do-rush-rxdb";
 
@@ -44,8 +51,9 @@ const storage = wrappedValidateAjvStorage({
 });
 
 // Create / ensure DB + collections
+let dbPromise: Promise<DB> | null = null;
+
 export function getDB(): Promise<DB> {
-  let dbPromise: Promise<DB> | null = null;
   console.log("DatabaseService: creating database..");
   if (!dbPromise) {
     dbPromise = (async () => {
@@ -117,55 +125,75 @@ export function getDB(): Promise<DB> {
               }).exec();
               return docs.map((d) => d.get("id"));
             },
-            // Last five IDs to text to consume.
-            async convertIdsToText(
+            /**
+             * Convert entry IDs to [[text, dateStr], ...]
+             */
+            async convertIdsToContent(
               this: RxCollection<EntryDocType>,
-              ids: string[]
-            ): Promise<string[]> {
-              // Get the 5 entries by their IDs, sorted by createdAt desc
+              ids: readonly string[],
+              {
+                relativeDate = true,
+                locale = "en",
+                preserveInputOrder = false,
+              }: Options = {}
+            ): Promise<string[][]> {
+              if (!ids?.length) return [];
+
               const docs = await this.find({
-                selector: { id: { $in: ids } },
+                selector: { id: { $in: ids as string[] } },
                 sort: [{ createdAt: "desc" }, { id: "desc" }],
               }).exec();
 
-              // Checks
-              if (docs.length === 0) {
-                return [];
-              }
+              if (docs.length === 0) return [];
+
               if (docs.length !== ids.length) {
                 console.warn(
-                  `convertIdsToText: some IDs not found. Requested ${ids.length}, found ${docs.length}`
+                  `convertIdsToContent: some IDs not found. requested=${ids.length} found=${docs.length}`
                 );
               }
 
-              // Extract their text content and return that.
-              return docs.map((d) => {
+              const toDateStr = (createdAt: EntryDocType["createdAt"]) =>
+                relativeDate
+                  ? formatTimeAgo(createdAt, locale)
+                  : formatAbsoluteDate(createdAt, locale);
+
+              // Build result rows
+              const rows = docs.map((d) => {
+                const status = d.asyncControl
+                  ?.audioConvertingToEntryText as AudioStatus;
+                if (status === "error") {
+                  throw new Error(
+                    "Audio→text failed: entry has no usable text."
+                  );
+                }
+                if (status === "processing") {
+                  throw new Error("Audio→text is still processing.");
+                }
+
                 const text = d.content?.phaseA?.entryText?.trim();
                 if (!text) {
-                  console.warn(
-                    `convertIdsToText: entry ${d.get(
-                      "id"
-                    )} has no text content. Returning empty string.`
-                  );
-                }
-                const exceptionStatus =
-                  d.asyncControl?.audioConvertingToEntryText;
-                if (exceptionStatus === "error") {
-                  throw new Error(
-                    "Audio to text conversion was failed. There are no entry text and this entry has a slightly rooted problem"
-                  );
-                }
-                if (exceptionStatus === "processing") {
-                  throw new Error("Audio to text is still processing");
+                  throw new Error(`No text for entry ${d.id ?? d.get?.("id")}`);
                 }
 
-                if (!text) {
-                  throw new Error(`There are no text for entry ${d.id}`);
-                }
-
-                // Return the entry text if it exists, otherwise an empty string (or null as needed)
-                return text ?? "";
+                return [text, toDateStr(d.createdAt)] as [string, string];
               });
+
+              if (!preserveInputOrder) return rows;
+
+              // Stable reorder to match input `ids` when requested
+              const byId = new Map<string, [string, string]>();
+              for (let i = 0; i < docs.length; i++) {
+                // ts-ignore rxdb doc typings: prefer doc.id if available
+                const docId = (docs[i].id ?? docs[i].get?.("id")) as string;
+                byId.set(docId, rows[i]);
+              }
+
+              const ordered: string[][] = [];
+              for (const id of ids) {
+                const row = byId.get(id);
+                if (row) ordered.push(row);
+              }
+              return ordered;
             },
           },
           methods: {},
@@ -175,6 +203,50 @@ export function getDB(): Promise<DB> {
         jobs: {
           schema: jobSchemaLiteral,
           methods: {
+            sendToLLM: async function (
+              this: RxDocument<JobDocType>,
+              prompt: string,
+              apiKey: string,
+              model: string
+            ): Promise<string> {
+              // Send the given prompt to the LLM specified in this job's entry
+              // Returns the LLM response text
+              // Throws on error
+              const entryId = this.get("entryId");
+              const entry = await db.collections.entries
+                .findOne(entryId)
+                .exec();
+              if (!entry) throw new Error("Entry not found");
+
+              // Call the API
+              const response = await fetch(
+                "https://api.openai.com/v1/chat/completions",
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${apiKey}`,
+                  },
+                  body: JSON.stringify({
+                    model,
+                    messages: [{ role: "user", content: prompt }],
+                  }),
+                }
+              );
+
+              if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(
+                  `LLM API error: ${response.status} ${response.statusText} - ${errorText}`
+                );
+              }
+
+              const data = await response.json();
+              const text = data.choices?.[0]?.message?.content;
+              if (!text) throw new Error("No response from LLM");
+
+              return text;
+            },
             startJob: async function (
               this: RxCollection<JobDocType>,
               jobId: string

@@ -50,3 +50,46 @@ export function levenshtein(a: string, b: string) {
   }
   return dp[m][n];
 }
+
+// Utility: human "time-ago" using Intl.RelativeTimeFormat.
+// Handles seconds → years, past & future, and locale.
+export function formatTimeAgo(input: Date | string | number, locale = "en"): string {
+  const date = new Date(input);
+  if (isNaN(date.getTime())) return "Invalid date";
+
+  const now = Date.now();
+  const diffMs = date.getTime() - now; // negative => past
+  const absMs = Math.abs(diffMs);
+
+  const units: Array<[Intl.RelativeTimeFormatUnit, number]> = [
+    ["year",   365 * 24 * 60 * 60 * 1000],
+    ["month",   30 * 24 * 60 * 60 * 1000], // approx
+    ["week",     7 * 24 * 60 * 60 * 1000],
+    ["day",      24 * 60 * 60 * 1000],
+    ["hour",     60 * 60 * 1000],
+    ["minute",   60 * 1000],
+    ["second",   1000],
+  ];
+
+  const rtf = new Intl.RelativeTimeFormat(locale, { numeric: "auto" });
+
+  for (const [unit, ms] of units) {
+    if (absMs >= ms || unit === "second") {
+      const value = Math.round(diffMs / ms);
+      return rtf.format(value, unit);
+    }
+  }
+  // Should never hit here
+  return rtf.format(0, "second");
+}
+
+// Fallback: absolute date string in the current locale.
+export function formatAbsoluteDate(input: Date | string | number, locale = "en"): string {
+  const date = new Date(input);
+  if (isNaN(date.getTime())) return "Invalid date";
+  return date.toLocaleDateString(locale, {
+    year: "numeric",
+    month: "short",
+    day: "2-digit",
+  });
+}
