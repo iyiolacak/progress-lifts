@@ -30,7 +30,8 @@ If you’ve ever dropped a to‑do app because it became a chore, LocalDoRush is
 ## Key Features
 
 ### Traditional AI App (Centralized)
-```Your Data 
+```
+Your Data 
    ↓
 App’s Server --- stores + logs ──► Privacy Risk
    ↓
@@ -38,16 +39,19 @@ App’s Server --- stores + logs ──► Privacy Risk
    ↓
 App’s Server --- stores again ──► Vendor Lock-in
    ↓
-  You```
+  You
+```
 
 ### LocalDoRush
-```Your Data
+```
+Your Data
    ↓
 Your Device ── stored only here ──► You own it
    ↓
 LLM Service (default: OpenAI(BYOK or hosted), or any provider you choose)
    ↓
-Your Device ── results kept local ──► No telemetry```
+Your Device ── results kept local ──► No telemetry
+```
 
 * **Ambient Input**: `/` to focus, type, hit Enter — done.
 * **Instant Logging**: “Fix login bug” or “Plan Q3 deck” — captured immediately.
