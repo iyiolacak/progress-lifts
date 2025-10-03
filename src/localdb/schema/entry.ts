@@ -101,7 +101,7 @@ export const entrySchemaLiteral = {
       properties: {
         audioConvertingToEntryText: {
           type: "string",
-          enum: ["processing", "done", "error"], // If entry is not an audio, this field is "done" by default.
+          enum: ["idle", "processing", "done", "error"], // If entry is not an audio, this field is "done" by default.
         },
         enrichmentStatus: {
           type: "string",
