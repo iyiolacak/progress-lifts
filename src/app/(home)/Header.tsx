@@ -4,7 +4,7 @@ import React from "react";
 
 const Header = () => {
   return (
-    <header className="sticky top-0 bg-background z-10 flex-none border-b">
+    <header className="sticky top-0 bg-background z-[9999] flex-none border-b">
       <div className="h-full px-3 md:px-8 mx-auto max-w-full flex items-center justify-between">
         {/* Logo – keeps intrinsic width */}
         <div className="hidden md:block flex-shrink-0">
