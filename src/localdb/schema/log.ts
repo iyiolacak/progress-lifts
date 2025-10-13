@@ -9,7 +9,7 @@ import {
  * Append-only, immutable log record.
  * Write small, structured facts that the UI can render immediately.
  */
-export const logSchemaLiteral = {
+export const logSchemaLiteralV1 = {
   title: "Logs",
   version: 0,
   primaryKey: "id",
@@ -17,24 +17,24 @@ export const logSchemaLiteral = {
   additionalProperties: false,
   properties: {
     id: { type: "string", maxLength: 128 },        // uuid
-    createdAt: { type: "number", minimum: 0 },     // epoch ms
+  createdAt: { type: "integer", minimum: 0, maximum: 32503680000000, multipleOf: 1 },     // epoch ms
     // Where did this event happen?
     entity: {
       type: "object",
       additionalProperties: false,
       properties: {
-        type: { type: "string" },                  // "entry" | "job" | "system" | ...
-        id:   { type: "string" },
+        type: { type: "string", maxLength: 64 },                  // "entry" | "job" | "system" | ...
+        id:   { type: "string", maxLength: 128 },
       },
       required: ["type"],
     },
     // Traceability across multiple logs
-    correlationId: { type: "string" },             // tie related logs (e.g., jobId)
-    spanId: { type: "string" },                    // a unit of work
-    parentSpanId: { type: "string" },
+  correlationId: { type: "string", maxLength: 128 },             // tie related logs (e.g., jobId)
+  spanId: { type: "string" },                    // a unit of work
+  parentSpanId: { type: "string" },
 
     // What happened?
-    level: { type: "string", enum: ["debug","info","warn","error"] },
+  level: { type: "string", enum: ["debug","info","warn","error"], maxLength: 16 },
     event: { type: "string" },                     // short action keyword, e.g., "job.started"
     message: { type: "string" },                   // UI-friendly 1-liner
 
@@ -58,14 +58,19 @@ export const logSchemaLiteral = {
     ttlAfter: { type: "number" },                  // epoch ms; eligible for pruning after this time
   },
   required: ["id", "createdAt", "entity", "level", "event"],
+  // Indexes must only include required fields for Dexie storage.
   indexes: [
-    ["entity.type", "entity.id", "createdAt"],
-    ["correlationId", "createdAt"],
+    ["entity.type", "createdAt"],
     ["level", "createdAt"],
     "createdAt",
   ],
 } as const;
 
-const logSchemaTyped = toTypedRxJsonSchema(logSchemaLiteral);
+const logSchemaTyped = toTypedRxJsonSchema(logSchemaLiteralV1);
 export type LogDocType = ExtractDocumentTypeFromTypedRxJsonSchema<typeof logSchemaTyped>;
-export const logSchema: RxJsonSchema<LogDocType> = logSchemaLiteral;
+export const logSchema: RxJsonSchema<LogDocType> = logSchemaLiteralV1;
+
+export const logsMigrationStrategies = {
+  // migrate documents from version 0 -> 1
+  0: (doc: any) => doc
+} as const;

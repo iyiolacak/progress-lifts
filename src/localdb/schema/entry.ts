@@ -4,37 +4,6 @@ import {
   toTypedRxJsonSchema,
 } from "rxdb";
 
-// export type EntryDoc = {
-//   id: string;                       // primary
-//   kind: "text" | "audio";
-//   createdAt: number;                // epoch ms (canonical)
-//   content: {
-//     phaseA?: {
-//       entryText?: string;
-//       // Prefer RxDB attachments for binary audio; keep pointer only if needed.
-//       audioAttachmentId?: string;
-//     };
-//     phaseB?: {
-//       gainedXp?: number;
-//       est_minutes_for_the_task?: number;
-//       complexity?: number;
-//       tags?: string[];
-//       possibleMoodRegardingContext?: number; // 0..100
-//       meta?: {                              // was metadata
-//         raw?: string;                       // was metadata.metadata
-//       };
-//     };
-//   };
-//   givenContext: string[];           // last-5 IDs at insert time (frozen)
-//   asyncControl?: {
-//     enrichmentStatus?: "idle" | "queued" | "running" | "done" | "error";
-//     enrichedAt?: string;            // ISO 8601
-//     error?: string;
-//   };
-//   // Optional denormalization for tag search; consider a separate TagIndex collection instead.
-//   tagsFlat?: string[];
-// };
-
 export const entrySchemaLiteral = {
   title: "Entry",
   version: 0,
@@ -44,7 +13,7 @@ export const entrySchemaLiteral = {
   properties: {
     id: { type: "string", maxLength: 128 },
     kind: { type: "string", enum: ["text", "audio"] },
-    createdAt: { type: "number", minimum: 0 },
+    createdAt: { type: "integer", minimum: 0, maximum: 32503680000000, multipleOf: 1 },
 
     content: {
       type: "object",
@@ -62,24 +31,15 @@ export const entrySchemaLiteral = {
           type: "object",
           additionalProperties: false,
           properties: {
-            gainedXp: { type: "number" },
-            est_minutes_for_the_task: { type: "number" },
-            complexity: { type: "number" },
-            tags: {
-              type: "array",
-              items: { type: "string" },
-            },
-            possibleMoodRegardingContext: {
-              type: "number",
-              minimum: 0,
-              maximum: 100,
-            },
+            gainedXp: { type: "number", multipleOf: 1 },
+            est_minutes_for_the_task: { type: "integer", minimum: 0, multipleOf: 1 },
+            complexity: { type: "integer", minimum: 0, maximum: 100, multipleOf: 1 }, // <-- added
+            tags: { type: "array", items: { type: "string" } },
+            possibleMoodRegardingContext: { type: "number", minimum: 0, maximum: 100, multipleOf: 1 },
             meta: {
               type: "object",
               additionalProperties: false,
-              properties: {
-                raw: { type: "string" },
-              },
+              properties: { raw: { type: "string" } },
             },
           },
         },
@@ -87,50 +47,34 @@ export const entrySchemaLiteral = {
       required: [],
     },
 
-    givenContext: {
-      type: "array",
-      items: { type: "string", maxLength: 128 },
-      maxItems: 5,
-      // Set final only if you actually enable AJV validation with wrappedValidateAjvStorage
-      // final: true,
-    },
+    givenContext: { type: "array", items: { type: "string", maxLength: 128 }, maxItems: 5 },
 
     asyncControl: {
       type: "object",
       additionalProperties: false,
       properties: {
-        audioConvertingToEntryText: {
-          type: "string",
-          enum: ["idle", "processing", "done", "error"], // If entry is not an audio, this field is "done" by default.
-        },
-        enrichmentStatus: {
-          type: "string",
-          enum: ["idle", "queued", "running", "done", "error"],
-        },
+        audioConvertingToEntryText: { type: "string", enum: ["idle", "processing", "done", "error"] },
+        enrichmentStatus: { type: "string", enum: ["idle", "queued", "running", "done", "error"] },
         enrichedAt: { type: "string", format: "date-time" },
         error: { type: "string" },
       },
     },
 
-    tagsFlat: {
-      type: "array",
-      items: { type: "string" },
-    },
+    tagsFlat: { type: "array", items: { type: "string" } },
   },
+
   required: ["id", "kind", "createdAt", "givenContext"],
   indexes: [
     "createdAt",
-    ["createdAt", "content.phaseB.tags"],
     ["createdAt", "content.phaseB.complexity"],
     ["createdAt", "id"],
   ],
 } as const;
 
 const entrySchemaTyped = toTypedRxJsonSchema(entrySchemaLiteral);
-
-export type EntryDocType = ExtractDocumentTypeFromTypedRxJsonSchema<
-  typeof entrySchemaTyped
->;
+export type EntryDocType = ExtractDocumentTypeFromTypedRxJsonSchema<typeof entrySchemaTyped>;
 export const entrySchema: RxJsonSchema<EntryDocType> = entrySchemaLiteral;
 
-export type AudioStatus = "processing" | "done" | "error";
+// If you keep "idle" above, consider:
+export type AudioStatus = "idle" | "processing" | "done" | "error";
+// or, if you don't want "idle" at runtime, remove it from the schema enum instead.

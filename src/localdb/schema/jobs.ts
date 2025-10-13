@@ -4,28 +4,6 @@ import {
   toTypedRxJsonSchema,
 } from "rxdb";
 
-// export type JobDoc = {
-//   id: string; // pk (uuid)
-//   type: "processEntry"; // narrow with a union as you add more
-//   entryId: string;
-
-//   status: "pending" | "running" | "completed" | "failed";
-//   priority?: number; // higher runs first (optional)
-//   attempts: number; // how many times we tried
-//   maxAttempts: number; // cap retries
-
-//   createdAt: number;
-//   updatedAt: number;
-
-//   // lock/visibility timeout to avoid double work
-//   lockedUntil?: number; // epoch ms; job is invisible while locked
-
-//   // backoff scheduling
-//   scheduledAt?: number; // earliest time this job can run
-
-//   error?: string; // last error message (optional)
-// };
-
 export const jobSchemaLiteral = {
   title: "Jobs",
   version: 0,
@@ -40,20 +18,23 @@ export const jobSchemaLiteral = {
     status: {
       type: "string",
       enum: ["pending", "running", "completed", "failed"],
+      maxLength: 16
     },
-    priority: { type: "number" }, // 1 to 5
 
-    attempts: { type: "number", minimum: 0 },
-    maxAttempts: { type: "number", minimum: 1 },
+  priority: { type: "integer", minimum: 1, maximum: 5, multipleOf: 1 },
 
-    createdAt: { type: "number", minimum: 0 },
-    updatedAt: { type: "number", minimum: 0 },
+  attempts: { type: "integer", minimum: 0, multipleOf: 1 },
+  maxAttempts: { type: "integer", minimum: 1, multipleOf: 1 },
 
-    lockedUntil: { type: "number" },
-    scheduledAt: { type: "number" },
+    createdAt: { type: "integer", minimum: 0, maximum: 32503680000000, multipleOf: 1 },
+    updatedAt: { type: "integer", minimum: 0, maximum: 32503680000000, multipleOf: 1 },
 
-    error: { type: "string" },
+    lockedUntil: { type: "integer", minimum: 0, maximum: 32503680000000, multipleOf: 1 },
+    scheduledAt: { type: "integer", minimum: 0, maximum: 32503680000000, multipleOf: 1 },
+
+    error: { type: "string" }
   },
+
   required: [
     "id",
     "type",
@@ -62,21 +43,22 @@ export const jobSchemaLiteral = {
     "attempts",
     "maxAttempts",
     "createdAt",
-    "updatedAt",
+    "updatedAt"
   ],
+
+  // Composite index: only required fields (dexie storage disallows non-required fields in indexes)
   indexes: [
-    // core claiming path: find eligible jobs
-    ["status", "scheduledAt", "lockedUntil", "priority"],
+    ["status", "id"],
     "entryId",
-  ],
+    "createdAt",
+  ]
 } as const;
 
 const jobSchemaTyped = toTypedRxJsonSchema(jobSchemaLiteral);
-
-export type JobDocType = ExtractDocumentTypeFromTypedRxJsonSchema<
-  typeof jobSchemaTyped
->;
+export type JobDocType = ExtractDocumentTypeFromTypedRxJsonSchema<typeof jobSchemaTyped>;
 export const jobSchema: RxJsonSchema<JobDocType> = jobSchemaLiteral;
+
+// --- Types & helpers ---
 
 export type EntryJob = {
   type: "processEntry";
@@ -87,24 +69,29 @@ export type EntryJob = {
   attempts: number;
   maxAttempts: number;
   updatedAt: number;
-  priority?: number;
+  priority?: number;      // optional in docs, required by factory (can default)
   error?: string;
   scheduledAt?: number;
   lockedUntil?: number;
 };
 
+// Factory: clamps priority into 1..5 and ensures integer-like timestamps.
 export const createEntryJobParams = (
   entryId: string,
-  priority: number,
-  maxAttempts: number
-): EntryJob => ({
-  id: crypto.randomUUID(),
-  type: "processEntry",
-  entryId,
-  status: "pending",
-  priority,
-  attempts: 0,
-  maxAttempts,
-  createdAt: Date.now(),
-  updatedAt: Date.now(),
-});
+  priority: number = 3,
+  maxAttempts: number = 3
+): EntryJob => {
+  const now = Date.now();
+  const p = Math.max(1, Math.min(5, Math.round(priority)));
+  return {
+    id: crypto.randomUUID(),
+    type: "processEntry",
+    entryId,
+    status: "pending",
+    priority: p,
+    attempts: 0,
+    maxAttempts: Math.max(1, Math.round(maxAttempts)),
+    createdAt: now,
+    updatedAt: now
+  };
+};

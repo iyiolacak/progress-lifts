@@ -1,21 +1,26 @@
 // db.ts
-import { addRxPlugin, createRxDatabase, type RxDatabase, type RxCollection } from "rxdb/plugins/core";
+import { addRxPlugin, createRxDatabase } from "rxdb/plugins/core";
 import { RxDBLeaderElectionPlugin } from "rxdb/plugins/leader-election";
+
 import { RxDBQueryBuilderPlugin } from "rxdb/plugins/query-builder";
+
 import { wrappedValidateAjvStorage } from "rxdb/plugins/validate-ajv";
 import { getRxStorageDexie } from "rxdb/plugins/storage-dexie";
 
-import { entrySchemaLiteral, type EntryDocType, type AudioStatus } from "@/localdb/schema/entry";
-import { jobSchemaLiteral, type JobDocType, createEntryJobParams } from "@/localdb/schema/jobs";
-import { logSchemaLiteral, type LogDocType } from "@/localdb/schema/log";
-import { createLogger, pruneExpired } from "./logger"
-import { formatAbsoluteDate, formatTimeAgo } from "@/lib/utils";
-import { DatabaseError, EntryNotFoundError, InvalidJobStateError } from "./errors";
+import { entrySchemaLiteral } from "@/localdb/schema/entry";
+import { jobSchemaLiteral } from "@/localdb/schema/jobs";
+import { logSchemaLiteralV1, logsMigrationStrategies } from "@/localdb/schema/log";
+import { createLogger } from "./logger"
 import { DATABASE_NAME, DEFAULT_CONTEXT_ENTRIES } from "./dbConstants";
 import { jobMethods, jobStatics } from "./job/jobApi";
+import { entryMethods, entryStatics } from "./entry/entriesApi";
+import { AppDatabase, Collections } from "./types/types";
+import { RxDBMigrationSchemaPlugin } from 'rxdb/plugins/migration-schema';
 
+addRxPlugin(RxDBMigrationSchemaPlugin);
 addRxPlugin(RxDBLeaderElectionPlugin);
 addRxPlugin(RxDBQueryBuilderPlugin);
+
 //
 // Architecture:
 // - UI writes Entries (truth).
@@ -29,22 +34,6 @@ addRxPlugin(RxDBQueryBuilderPlugin);
 //
 //
 
-export type Collections = {
-  // phaseA = input; phaseB = enrichment written later.
-  // Immutable past, additive future.
-  entries: RxCollection<EntryDocType>;
-  // Job (command): “please do X to that entry.”
-  // Lifecycle = pending → running → completed | failed.
-  // Also has: priority, attempts, maxAttempts, scheduledAt, lockedUntil, error.
-  jobs: RxCollection<JobDocType>;
-  // Worker (runtime): a loop that claims one job at a time, runs a handler, updates job, logs facts. It’s not React.
-  // You just start it from React (or anywhere).
-  logs: RxCollection<LogDocType>;
-  llmService: RxCollection // llm takes one phase a, and returns phase b
-};
-export type AppDatabase = RxDatabase<Collections>;
-
-
 // ---- error types ----
 
 // ---- module-scope singleton (HMR/StrictMode safe) ----
@@ -54,13 +43,15 @@ let _disposeInterval: number | null = null;
 export async function getDB(): Promise<AppDatabase> {
   if (_dbPromise) return _dbPromise;
   _dbPromise = createDatabase();
+  console.log("Database initializing...");
   return _dbPromise;
 }
 
 export async function resetDBForTests(): Promise<void> {
   if (_dbPromise) {
     const db = await _dbPromise;
-    await db.remove();
+    const removeDb = await db.remove();
+    console.log("Database removed:", removeDb);
     _dbPromise = null;
     if (_disposeInterval) { clearInterval(_disposeInterval); _disposeInterval = null; }
   }
@@ -71,7 +62,7 @@ async function createDatabase(): Promise<AppDatabase> {
   await enableDevMode();
 
   const storage = wrappedValidateAjvStorage({ storage: getRxStorageDexie() });
-  const db = await createRxDatabase<Collections>({ name: DATABASE_NAME, storage, ignoreDuplicate: true });
+  const db = await createRxDatabase<Collections>({ name: DATABASE_NAME, storage });
 
   await db.addCollections({
     entries: {
@@ -85,7 +76,7 @@ async function createDatabase(): Promise<AppDatabase> {
       methods: jobMethods(),
     },
     logs: {
-      schema: logSchemaLiteral,
+    schema: logSchemaLiteralV1,
     },
   });
 
@@ -97,6 +88,16 @@ async function createDatabase(): Promise<AppDatabase> {
   return db;
 }
 
+export const destroyDb = async (db: AppDatabase) => {
+  try {
+    const removeDb = await db.remove();
+    console.log("Database disposed:", removeDb);
+  }
+  catch (e) {
+    console.warn("Error during database dispose:", e);
+  }
+};
+
 // ---- dev-mode (tree-shake safe) ----
 async function enableDevMode() {
   if (process.env.NODE_ENV !== "production") {
@@ -107,11 +108,7 @@ async function enableDevMode() {
   }
 }
 
-// ---- entries API (statics/methods) ----
 
-
-
-// ---- jobs API ----
 
 // ---- logging hooks (post-save) ----
 function setupHooks(db: AppDatabase, logger: ReturnType<typeof createLogger>) {
