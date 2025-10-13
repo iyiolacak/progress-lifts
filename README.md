@@ -1,5 +1,7 @@
 # Local Do Rush
 
+If you've ever dropped a to‑do app because it became a chore, Local Do Rush is the antidote.
+
 ---
 
 ## Why Local Do Rush?
@@ -21,8 +23,6 @@ Capture → Nudge → Do → Reward → Reflect → Repeat
 The result: compounding progress without project management ceremony.
 
 
-If you’ve ever dropped a to‑do app because it became a chore, LocalDoRush is the antidote.
-
 ---
 
 ## Key Features
@@ -40,7 +40,7 @@ App’s Server --- stores again ──► Vendor Lock-in
   You
 ```
 
-### LocalDoRush
+### Local Do Rush
 ```
 Your Data
    ↓
