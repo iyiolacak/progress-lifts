@@ -11,7 +11,7 @@ import { Howl } from "howler";
  *  (Move to JSON if you want non‑TS devs to edit it.)
  */
 export const SFX_MAP = {
-  hover: { src: "/sfx/button_hover.mp3", volume: 0.4 },
+  hover: { src: "/sfx/casual_pop.mp3", volume: 0.4 },
   click: { src: "/sfx/button_click.mp3", volume: 0.55 },
   click_2: { src: "/sfx/click_2.mp3", volume: 0.55 },
   popup: { src: "/sfx/pop_up.mp3", volume: 0.4 },
@@ -115,7 +115,7 @@ export function useHoverClickSounds(): {
 } {
   const { play } = useSfx();
   return {
-    onMouseEnter: () => play("popup"),
+    onMouseEnter: () => play("hover"),
     onClick: () => play("click_2"),
     switch: () => play("switch_2"),
     punchyTap: () => play("punchy_tap"),

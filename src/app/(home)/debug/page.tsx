@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { destroyDb, getDB, resetDBForTests } from "@/localdb/db"
+import { destroyDb, getDB } from "@/localdb/db"
 import type { EntryDocType } from "@/localdb/schema/entry"
 import type { JobDocType } from "@/localdb/schema/jobs"
 import { Button } from "@/components/ui/button"
@@ -129,8 +129,6 @@ export default function DebugPage() {
       updateStatus("Failed to load jobs: " + errMsg(err), "error")
     }
   }
-  
-
 
   async function listLogs() {
     updateStatus("Loading logs...", "loading")
@@ -149,7 +147,7 @@ export default function DebugPage() {
   async function resetDB() {
     updateStatus("Resetting database...", "loading")
     try {
-      await destroyDb(this);
+      await destroyDb(this)
       setDbReady(false)
       setEntries([])
       setJobs([])
@@ -167,24 +165,19 @@ export default function DebugPage() {
 
   return (
     <div className="min-h-screen bg-background p-6">
-      <div className="mx-auto max-w-7xl space-y-6">
+      <div className="mx-auto max-w-7xl space-y-8">
         {/* Header */}
-        <div className="space-y-2">
-          <div className="flex items-center gap-3">
-            <Database className="h-8 w-8 text-primary" />
-            <h1 className="text-3xl font-bold tracking-tight">LocalLoop Debug Console</h1>
-          </div>
-          <p className="text-muted-foreground">Manage and inspect your local RxDB database collections</p>
+        <div className="space-y-3">
         </div>
 
         {/* Status Alert */}
         {status !== "idle" && (
           <Alert variant={statusType === "error" ? "destructive" : "default"}>
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription className="flex items-center justify-between">
+            <AlertCircle className="h-5 w-5" strokeWidth={2.5} />
+            <AlertDescription className="flex items-center justify-between text-base">
               <span>{status}</span>
               {dbReady && (
-                <Badge variant="outline" className="ml-2">
+                <Badge variant="secondary" className="ml-2 text-sm">
                   Connected
                 </Badge>
               )}
@@ -195,44 +188,44 @@ export default function DebugPage() {
         {/* Action Buttons */}
         <Card>
           <CardHeader>
-            <CardTitle>Database Actions</CardTitle>
-            <CardDescription>Perform operations on your local database</CardDescription>
+            <CardTitle className="text-2xl">Database Actions</CardTitle>
+            <CardDescription className="text-base">Perform operations on your local database</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="flex flex-wrap gap-2">
               <Button onClick={initDB} variant="default">
-                <RefreshCw className="mr-2 h-4 w-4" />
+                <RefreshCw className="mr-2 h-5 w-5" strokeWidth={2.5} />
                 Initialize DB
               </Button>
               <Separator orientation="vertical" className="h-8" />
               <Button onClick={createSampleEntry} disabled={!dbReady} variant="secondary">
-                <Plus className="mr-2 h-4 w-4" />
+                <Plus className="mr-2 h-5 w-5" strokeWidth={2.5} />
                 Create Entry
               </Button>
-              <Button onClick={listEntries} disabled={!dbReady} variant="outline">
-                <List className="mr-2 h-4 w-4" />
+              <Button onClick={listEntries} disabled={!dbReady} variant="secondary">
+                <List className="mr-2 h-5 w-5" strokeWidth={2.5} />
                 List Entries
               </Button>
               <Button
                 onClick={enqueueJobForLastEntry}
                 disabled={!dbReady || entries.length === 0}
-                variant="outline"
+                variant="secondary"
                 size="sm"
               >
-                <Briefcase className="mr-2 h-4 w-4" />
+                <Briefcase className="mr-2 h-5 w-5" strokeWidth={2.5} />
                 Enqueue Job
               </Button>
-              <Button onClick={listJobs} disabled={!dbReady} variant="outline">
-                <List className="mr-2 h-4 w-4" />
+              <Button onClick={listJobs} disabled={!dbReady} variant="secondary">
+                <List className="mr-2 h-5 w-5" strokeWidth={2.5} />
                 List Jobs
               </Button>
-              <Button onClick={listLogs} disabled={!dbReady} variant="outline">
-                <ScrollText className="mr-2 h-4 w-4" />
+              <Button onClick={listLogs} disabled={!dbReady} variant="secondary">
+                <ScrollText className="mr-2 h-5 w-5" strokeWidth={2.5} />
                 List Logs
               </Button>
               <Separator orientation="vertical" className="h-8" />
               <Button onClick={resetDB} variant="destructive">
-                <Trash2 className="mr-2 h-4 w-4" />
+                <Trash2 className="mr-2 h-5 w-5" strokeWidth={2.5} />
                 Reset DB
               </Button>
             </div>
@@ -242,16 +235,16 @@ export default function DebugPage() {
         {/* Data Tabs */}
         <Tabs defaultValue="entries" className="w-full">
           <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="entries" className="gap-2">
-              <FileText className="h-4 w-4" />
+            <TabsTrigger value="entries" className="gap-2 text-base">
+              <FileText className="h-5 w-5" strokeWidth={2.5} />
               Entries ({entries.length})
             </TabsTrigger>
-            <TabsTrigger value="jobs" className="gap-2">
-              <Briefcase className="h-4 w-4" />
+            <TabsTrigger value="jobs" className="gap-2 text-base">
+              <Briefcase className="h-5 w-5" strokeWidth={2.5} />
               Jobs ({jobs.length})
             </TabsTrigger>
-            <TabsTrigger value="logs" className="gap-2">
-              <ScrollText className="h-4 w-4" />
+            <TabsTrigger value="logs" className="gap-2 text-base">
+              <ScrollText className="h-5 w-5" strokeWidth={2.5} />
               Logs ({logs.length})
             </TabsTrigger>
           </TabsList>
@@ -259,12 +252,12 @@ export default function DebugPage() {
           <TabsContent value="entries" className="mt-4">
             <Card>
               <CardHeader>
-                <CardTitle>Entries Collection</CardTitle>
-                <CardDescription>All entries stored in the local database</CardDescription>
+                <CardTitle className="text-2xl">Entries Collection</CardTitle>
+                <CardDescription className="text-base">All entries stored in the local database</CardDescription>
               </CardHeader>
               <CardContent>
                 <ScrollArea className="h-[500px] w-full rounded-md border">
-                  <pre className="p-4 text-sm font-mono">
+                  <pre className="p-4 text-base font-mono">
                     {entries.length > 0
                       ? JSON.stringify(entries, null, 2)
                       : "No entries found. Create a sample entry to get started."}
@@ -277,12 +270,12 @@ export default function DebugPage() {
           <TabsContent value="jobs" className="mt-4">
             <Card>
               <CardHeader>
-                <CardTitle>Jobs Collection</CardTitle>
-                <CardDescription>Background jobs and their processing status</CardDescription>
+                <CardTitle className="text-2xl">Jobs Collection</CardTitle>
+                <CardDescription className="text-base">Background jobs and their processing status</CardDescription>
               </CardHeader>
               <CardContent>
                 <ScrollArea className="h-[500px] w-full rounded-md border">
-                  <pre className="p-4 text-sm font-mono">
+                  <pre className="p-4 text-base font-mono">
                     {jobs.length > 0
                       ? JSON.stringify(jobs, null, 2)
                       : "No jobs found. Enqueue a job for an entry to see it here."}
@@ -295,12 +288,14 @@ export default function DebugPage() {
           <TabsContent value="logs" className="mt-4">
             <Card>
               <CardHeader>
-                <CardTitle>Logs Collection</CardTitle>
-                <CardDescription>System logs and activity records (limited to 100 most recent)</CardDescription>
+                <CardTitle className="text-2xl">Logs Collection</CardTitle>
+                <CardDescription className="text-base">
+                  System logs and activity records (limited to 100 most recent)
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <ScrollArea className="h-[500px] w-full rounded-md border">
-                  <pre className="p-4 text-sm font-mono">
+                  <pre className="p-4 text-base font-mono">
                     {logs.length > 0
                       ? JSON.stringify(logs, null, 2)
                       : "No logs found. Database activity will be logged here."}
