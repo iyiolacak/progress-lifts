@@ -1,21 +1,18 @@
-// db.ts
 import { addRxPlugin, createRxDatabase } from "rxdb/plugins/core";
 import { RxDBLeaderElectionPlugin } from "rxdb/plugins/leader-election";
-
 import { RxDBQueryBuilderPlugin } from "rxdb/plugins/query-builder";
-
 import { wrappedValidateAjvStorage } from "rxdb/plugins/validate-ajv";
 import { getRxStorageDexie } from "rxdb/plugins/storage-dexie";
+import { RxDBMigrationSchemaPlugin } from "rxdb/plugins/migration-schema";
 
 import { entrySchemaLiteral } from "@/localdb/schema/entry";
 import { jobSchemaLiteral } from "@/localdb/schema/jobs";
 import { logSchemaLiteralV1, logsMigrationStrategies } from "@/localdb/schema/log";
-import { createLogger } from "./logger"
+import { createLogger } from "./logger";
 import { DATABASE_NAME, DEFAULT_CONTEXT_ENTRIES } from "./dbConstants";
 import { jobMethods, jobStatics } from "./job/jobApi";
 import { entryMethods, entryStatics } from "./entry/entriesApi";
 import { AppDatabase, Collections } from "./types/types";
-import { RxDBMigrationSchemaPlugin } from 'rxdb/plugins/migration-schema';
 
 addRxPlugin(RxDBMigrationSchemaPlugin);
 addRxPlugin(RxDBLeaderElectionPlugin);
@@ -24,17 +21,11 @@ addRxPlugin(RxDBQueryBuilderPlugin);
 //
 // Architecture:
 // - UI writes Entries (truth).
-//
 // - Entries enqueue Jobs (commands).
-//
 // - A Worker (runtime) claims jobs, calls Handlers (business steps), which use Ports (LLM adapter)
-//   and write results back. Logs tell the story. 
-//
+//   and write results back. Logs tell the story.
 // - React only observes.
 //
-//
-
-// ---- error types ----
 
 // ---- module-scope singleton (HMR/StrictMode safe) ----
 let _dbPromise: Promise<AppDatabase> | null = null;
@@ -53,7 +44,10 @@ export async function resetDBForTests(): Promise<void> {
     const removeDb = await db.remove();
     console.log("Database removed:", removeDb);
     _dbPromise = null;
-    if (_disposeInterval) { clearInterval(_disposeInterval); _disposeInterval = null; }
+    if (_disposeInterval) {
+      clearInterval(_disposeInterval);
+      _disposeInterval = null;
+    }
   }
 }
 
@@ -62,27 +56,33 @@ async function createDatabase(): Promise<AppDatabase> {
   await enableDevMode();
 
   const storage = wrappedValidateAjvStorage({ storage: getRxStorageDexie() });
-  const db = await createRxDatabase<Collections>({ name: DATABASE_NAME, storage });
 
-  await db.addCollections({
-    entries: {
-      schema: entrySchemaLiteral,
-      statics: entryStatics(),
-      methods: entryMethods(),
-    },
-    jobs: {
-      schema: jobSchemaLiteral,
-      statics: jobStatics(),
-      methods: jobMethods(),
-    },
-    logs: {
-    schema: logSchemaLiteralV1,
-    },
-  });
+  let db: AppDatabase;
+  try {
+    db = await createRxDatabase<Collections>({ name: DATABASE_NAME, storage });
+    await db.addCollections({
+      entries: {
+        schema: entrySchemaLiteral,
+        statics: entryStatics(),
+        methods: entryMethods(),
+      },
+      jobs: {
+        schema: jobSchemaLiteral,
+        statics: jobStatics(),
+        methods: jobMethods(),
+      },
+      logs: {
+        schema: logSchemaLiteralV1,
+        // migrationStrategies: logsMigrationStrategies, // keep if you have migrations
+      },
+    });
+  } catch (e) {
+    console.error("createRxDatabase failed:", e);
+    throw e;
+  }
 
   // logger + hooks (post-save logging)
   const logger = createLogger(db.collections.logs);
-  
   setupHooks(db, logger);
 
   return db;
@@ -92,8 +92,7 @@ export const destroyDb = async (db: AppDatabase) => {
   try {
     const removeDb = await db.remove();
     console.log("Database disposed:", removeDb);
-  }
-  catch (e) {
+  } catch (e) {
     console.warn("Error during database dispose:", e);
   }
 };
@@ -104,18 +103,22 @@ async function enableDevMode() {
     try {
       const { RxDBDevModePlugin } = await import("rxdb/plugins/dev-mode");
       addRxPlugin(RxDBDevModePlugin);
-    } catch {}
+    } catch {
+      /* ignore missing dev plugin in prod bundles */
+    }
   }
 }
-
-
 
 // ---- logging hooks (post-save) ----
 function setupHooks(db: AppDatabase, logger: ReturnType<typeof createLogger>) {
   // keep context fresh
   db.collections.entries.preInsert(async (plain: any) => {
     if (typeof plain.createdAt !== "number") plain.createdAt = Date.now();
-    plain.givenContext = await db.collections.entries.statics.getLastEntryIds(plain.createdAt, DEFAULT_CONTEXT_ENTRIES);
+    // FIX: statics are attached to the collection instance, not under `.statics`
+    plain.givenContext = await db.collections.entries.statics.getLastEntryIds(
+      plain.createdAt,
+      DEFAULT_CONTEXT_ENTRIES
+    );
   }, false);
 
   db.collections.entries.postInsert(async (docData: any) => {
@@ -154,7 +157,12 @@ function setupHooks(db: AppDatabase, logger: ReturnType<typeof createLogger>) {
       level: "info",
       event: "job.enqueued",
       message: `Job enqueued (priority=${docData.priority ?? 3})`,
-      data: { type: docData.type, entryId: docData.entryId, attempts: docData.attempts, maxAttempts: docData.maxAttempts },
+      data: {
+        type: docData.type,
+        entryId: docData.entryId,
+        attempts: docData.attempts,
+        maxAttempts: docData.maxAttempts,
+      },
       source: { app: "web", module: "jobs" },
     });
   }, false);
