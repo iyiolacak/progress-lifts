@@ -1,5 +1,5 @@
 # Local Do Rush
-
+[Early Development: This project is being actively built and is not yet stable or ready for public use.]
 If you've ever dropped a to‑do app because it became a chore, Local Do Rush is the antidote.
 
 ---
