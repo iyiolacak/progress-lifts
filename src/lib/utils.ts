@@ -93,3 +93,7 @@ export function formatAbsoluteDate(input: Date | string | number, locale = "en")
     day: "2-digit",
   });
 }
+
+export function keyOf<T extends object>(obj: T): (keyof T)[] {
+  return Object.keys(obj) as (keyof T)[];
+}

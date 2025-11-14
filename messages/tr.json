@@ -11,7 +11,7 @@
     "tooltipBusy": "Whisper ile sesten yazılıyor..."
   },
   "Footer": {
-    "copyright": "© 2025 Locally Loop",
+    "copyright": "© 2025 {appName}",
     "license": "GPLv3 Lisansı",
     "privacy": "Gizliliğe öncelik · İnternete aktarım yok",
     "github": "GitHub",
@@ -20,19 +20,19 @@
   "Drawer": {
     "ApiKeyPrompt": {
       "title": "ChatGPT Anahtarınızı Bağlayalım",
-      "description": "Locally Loop'un çalışması için bir OpenAI API anahtarı gerekiyor. Aşağıya yapıştırın veya OpenAI Platformu'ndan bir anahtar alın.",
+      "description": "{appName} uygulamasının çalışması için bir OpenAI API anahtarı gerekiyor. Aşağıya yapıştırın veya OpenAI Platformu'ndan bir anahtar alın.",
       "openaiPlatformLink": "OpenAI Platformu",
       "inputLabel": "OpenAI API Anahtarınız",
       "inputPlaceholder": "sk-...",
       "saveButton": "Anahtarı Kaydet",
       "errorEmpty": "Lütfen OpenAI API anahtarınızı girin.",
-      "successToast": "Locally Loop hazır! Akışınıza geçebilirsiniz.",
+      "successToast": "{appName} hazır! Akışınıza geçebilirsiniz.",
       "tap-to-api-tutorial": "1 dakikada OpenAI API anahtarı al"
     }
   },
   "SettingsPage": {
     "title": "Gizlilik ve Şeffaflık",
-    "description": "Locally Loop, <strong>önce gizliliği</strong> ilke edinen bir üretkenlik uygulamasıdır. <em>Hiçbir</em> arka uç sunucusu, hesap veya analiz yoktur.<br></br> Tüm verileriniz, oturumlarınız, günlükleriniz ve ses kayıtlarınız, siz paylaşmayı seçene kadar cihazda kalır.<br></br>Yalnızca yazdığınız metin ve minimal bir bağlam parçacığı, doğrudan tarayıcınızdan seçtiğiniz LLM sağlayıcısına gider.",
+    "description": "{appName}, <strong>önce gizliliği</strong> ilke edinen bir üretkenlik uygulamasıdır. <em>Hiçbir</em> arka uç sunucusu, hesap veya analiz yoktur.<br></br> Tüm verileriniz, oturumlarınız, günlükleriniz ve ses kayıtlarınız, siz paylaşmayı seçene kadar cihazda kalır.<br></br>Yalnızca yazdığınız metin ve minimal bir bağlam parçacığı, doğrudan tarayıcınızdan seçtiğiniz LLM sağlayıcısına gider.",
     "modelProvider": {
       "title": "Model Sağlayıcı",
       "description": "İstemlerinizin nerede işleneceğini seçin. Barındırılan çıkarım için OpenAI'yi seçin veya her şeyi kontrolünüz altında tutmak için kendi barındırdığınız LLM uç noktanıza yönlendirin.",

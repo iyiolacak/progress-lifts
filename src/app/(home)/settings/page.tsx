@@ -8,6 +8,7 @@ import {
   VoiceInputCard,
   DiagnosticsCard,
 } from "./components";
+import { APP_NAME } from "@/lib/appInfo";
 
 export default function PrivacySettings() {
   const t = useTranslations("SettingsPage");
@@ -18,7 +19,7 @@ export default function PrivacySettings() {
         <h1 className="text-4xl font-bold">{t("title")}</h1>
         <p
           className="mt-4 text-lg leading-relaxed text-muted-foreground text-wrap"
-          dangerouslySetInnerHTML={{ __html: t.raw("description") }}
+          dangerouslySetInnerHTML={{ __html: t.raw("description", { appName: APP_NAME }) }}
         />
       </div>
 

@@ -14,6 +14,7 @@ export const entrySchemaLiteral = {
     id: { type: "string", maxLength: 128 },
     kind: { type: "string", enum: ["text", "audio"] },
     createdAt: { type: "integer", minimum: 0, maximum: 32503680000000, multipleOf: 1 },
+    updatedAt: { type: "integer", minimum: 0, maximum: 32503680000000, multipleOf: 1 },
 
     content: {
       type: "object",
@@ -63,7 +64,7 @@ export const entrySchemaLiteral = {
     tagsFlat: { type: "array", items: { type: "string" } },
   },
 
-  required: ["id", "kind", "createdAt", "givenContext"],
+  required: ["id", "kind", "createdAt", "updatedAt", "givenContext"],
   indexes: [
     "createdAt",
     ["createdAt", "content.phaseB.complexity"],

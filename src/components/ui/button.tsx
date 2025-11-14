@@ -53,13 +53,13 @@ function wrapTextNodes(children: React.ReactNode) {
             "btn-label inline-block will-change-transform transition-transform",
             "motion-reduce:transform-none motion-reduce:transition-none",
             "group-hover:scale-[1.03] group-active:scale-[0.96]",
-            "duration-150",
+            "duration-75",
             "[transition-timing-function:var(--ease-snap)]"
           )}
           style={
             {
               // Apple-like tactile snap curve
-              "--ease-snap": "cubic-bezier(0.32, 0.72, 0, 1)",
+              "--ease-snap": "cubic-bezier(0.42, 0, 0.58, 1))",
             } as React.CSSProperties
           }
         >

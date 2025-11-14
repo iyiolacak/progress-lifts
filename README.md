@@ -1,12 +1,13 @@
-# Local Do Rush
-[Early Development: This project is being actively built and is not yet stable or ready for public use.]
-If you've ever dropped a to‑do app because it became a chore, Local Do Rush is the antidote.
+# Progress Lifts
+
+If you've ever dropped a to‑do app because it became a chore, Progress Lifts is the antidote.
+Gamified, conventional automatized TODO handling like texting, satisfying and private. 
 
 ---
 
-## Why Local Do Rush?
+## Why Progress Lifts?
 
-Local Do Rush is the productivity tool for people who hate productivity tools.
+Progress Lifts is the productivity tool for people who hate productivity tools.
 ![output](https://github.com/user-attachments/assets/f8f0b1d0-abbb-4ca6-b0ec-ba37e9b69e2d)
 
 No clutter. No planning overhead. Just **type what you did or will do next** and press **Enter** — the app handles the rest. Every entry is logged, XP is awarded, and you get a sharp, actionable next step from an LLM **you control**.
@@ -40,7 +41,7 @@ App’s Server --- stores again ──► Vendor Lock-in
   You
 ```
 
-### Local Do Rush
+### Progress Lifts
 ```
 Your Data
    ↓

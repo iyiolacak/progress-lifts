@@ -26,11 +26,17 @@ interface SettingsSlice {
   saveVoice: boolean;
   setSaveVoice: (save: boolean) => void;
   shareDiagnostics: boolean;
-  setShareDiagnostics: (share: boolean) => void; 
+  setShareDiagnostics: (share: boolean) => void;
+
+  entryFormPosition: "below" | "above";
+  setEntryFormPosition: (position: "below" | "above") => void;
 }
 // --- Combined AppSettingsStore Type ---
 
-type AppSettingsStore = OnboardingSlice & ApiKeySlice & LocaleSlice & SettingsSlice;
+type AppSettingsStore = OnboardingSlice &
+  ApiKeySlice &
+  LocaleSlice &
+  SettingsSlice;
 
 // --- Individual Slice Creators ---
 
@@ -61,14 +67,22 @@ const createLocaleSlice: StateCreator<AppSettingsStore, [], [], LocaleSlice> = (
   setLocale: (locale: string) => set({ locale }),
 });
 
-const createSettingsSlice: StateCreator<AppSettingsStore, [], [], SettingsSlice> = (set) => ({
+const createSettingsSlice: StateCreator<
+  AppSettingsStore,
+  [],
+  [],
+  SettingsSlice
+> = (set) => ({
   modelProvider: "openai",
-  setModelProvider: (provider ) => set({ modelProvider: provider }),
+  setModelProvider: (provider) => set({ modelProvider: provider }),
   saveVoice: true,
   setSaveVoice: (save) => set({ saveVoice: save }),
   shareDiagnostics: false,
   setShareDiagnostics: (share) => set({ shareDiagnostics: share }),
-})
+
+  entryFormPosition: "below",
+  setEntryFormPosition: (position) => set({ entryFormPosition: position }),
+});
 
 // --- Main AppSettings Store ---
 

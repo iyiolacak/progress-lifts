@@ -6,8 +6,21 @@ import {
   DEFAULT_RECENT_LIMIT,
 } from "../dbConstants";
 import { AudioStatus, EntryDocType } from "../schema/entry";
+import { JobDocType } from "../schema/jobs";
 import { formatAbsoluteDate, formatTimeAgo } from "@/lib/utils";
 import { DatabaseError } from "../errors";
+
+type EntryCollectionWithHelpers = RxCollection<EntryDocType> & {
+  getLastEntryIds(beforeTs: number, limit?: number): Promise<string[]>;
+};
+
+type JobCollectionWithHelpers = RxCollection<JobDocType> & {
+  createJob(
+    entryId: string,
+    priority?: number,
+    maxAttempts?: number
+  ): Promise<RxDocument<JobDocType>>;
+};
 
 export function entryStatics() {
   return {
@@ -21,7 +34,7 @@ export function entryStatics() {
     ) {
       const createdAt = Date.now();
       const id = crypto.randomUUID();
-      const givenContext = await this.statics.getLastEntryIds(
+      const givenContext = await (this as EntryCollectionWithHelpers).getLastEntryIds(
         createdAt,
         DEFAULT_CONTEXT_ENTRIES
       );
@@ -47,7 +60,7 @@ export function entryStatics() {
       } as EntryDocType);
 
       // job creation
-      this.database.collections.jobs.statics
+      (this.database.collections.jobs as JobCollectionWithHelpers)
         .createJob(id, DEFAULT_JOB_PRIORITY, DEFAULT_MAX_ATTEMPTS)
         .catch((e: unknown) =>
           console.warn("createJob failed for entry", id, e)

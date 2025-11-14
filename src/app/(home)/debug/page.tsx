@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { destroyDb, getDB } from "@/localdb/db"
+import { getDB, resetDBForTests } from "@/localdb/db"
 import type { EntryDocType } from "@/localdb/schema/entry"
 import type { JobDocType } from "@/localdb/schema/jobs"
 import { Button } from "@/components/ui/button"
@@ -147,7 +147,7 @@ export default function DebugPage() {
   async function resetDB() {
     updateStatus("Resetting database...", "loading")
     try {
-      await destroyDb(this)
+      await resetDBForTests()
       setDbReady(false)
       setEntries([])
       setJobs([])

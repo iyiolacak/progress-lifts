@@ -1,11 +1,11 @@
-import { addRxPlugin, createRxDatabase } from "rxdb/plugins/core";
+import { addRxPlugin, createRxDatabase, RxCollection } from "rxdb/plugins/core";
 import { RxDBLeaderElectionPlugin } from "rxdb/plugins/leader-election";
 import { RxDBQueryBuilderPlugin } from "rxdb/plugins/query-builder";
 import { wrappedValidateAjvStorage } from "rxdb/plugins/validate-ajv";
 import { getRxStorageDexie } from "rxdb/plugins/storage-dexie";
 import { RxDBMigrationSchemaPlugin } from "rxdb/plugins/migration-schema";
 
-import { entrySchemaLiteral } from "@/localdb/schema/entry";
+import { EntryDocType, entrySchemaLiteral } from "@/localdb/schema/entry";
 import { jobSchemaLiteral } from "@/localdb/schema/jobs";
 import { logSchemaLiteralV1, logsMigrationStrategies } from "@/localdb/schema/log";
 import { createLogger } from "./logger";
@@ -73,7 +73,6 @@ async function createDatabase(): Promise<AppDatabase> {
       },
       logs: {
         schema: logSchemaLiteralV1,
-        // migrationStrategies: logsMigrationStrategies, // keep if you have migrations
       },
     });
   } catch (e) {
@@ -112,10 +111,11 @@ async function enableDevMode() {
 // ---- logging hooks (post-save) ----
 function setupHooks(db: AppDatabase, logger: ReturnType<typeof createLogger>) {
   // keep context fresh
-  db.collections.entries.preInsert(async (plain: any) => {
+  const entriesCollection = db.collections.entries as typeof db.collections.entries & ReturnType<typeof entryStatics>;
+
+  db.collections.entries.preInsert(async (plain) => {
     if (typeof plain.createdAt !== "number") plain.createdAt = Date.now();
-    // FIX: statics are attached to the collection instance, not under `.statics`
-    plain.givenContext = await db.collections.entries.statics.getLastEntryIds(
+    plain.givenContext = await entriesCollection.getLastEntryIds(
       plain.createdAt,
       DEFAULT_CONTEXT_ENTRIES
     );

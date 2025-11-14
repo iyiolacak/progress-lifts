@@ -15,6 +15,7 @@ import ApiKeyForm from "./ApiKeyForm";
 import Image from "next/image";
 import { useAppSettings } from "@/localdb/store/appPreferences";
 import { useTranslations } from "next-intl";
+import { APP_NAME } from "@/lib/appInfo";
 
 export interface ApiKeyPromptProps {
   forceOpen?: boolean;
@@ -76,7 +77,7 @@ export const ApiKeyPrompt: React.FC<ApiKeyPromptProps> = ({
   );
 
   const handleSuccess = useCallback(() => {
-    toast.success(t("successToast"));
+    toast.success(t("successToast", { appName: APP_NAME }));
     setOnboardingStatus("done");
     play("game_start");
     close();

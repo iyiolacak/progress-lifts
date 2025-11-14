@@ -3,10 +3,11 @@
 import React, { FormEvent, useRef, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { toast } from "sonner";;
+import { toast } from "sonner";
 import { ArrowUpRight, KeyPlus, Link } from "iconoir-react/regular";
 import { useTranslations } from "next-intl";
 import { useAppSettings } from "@/localdb/store/appPreferences";
+import { APP_NAME } from "@/lib/appInfo";
 
 interface ApiKeyFormProps {
   onSuccess: () => void;
@@ -31,7 +32,7 @@ const ApiKeyForm: React.FC<ApiKeyFormProps> = ({ onSuccess }) => {
       return;
     }
     setApiKey(inputValue.trim());
-    toast.success(t("ApiKeyPrompt.successToast"));
+    toast.success(t("ApiKeyPrompt.successToast", { appName: APP_NAME }));
     onSuccess();
   };
 
@@ -45,7 +46,7 @@ const ApiKeyForm: React.FC<ApiKeyFormProps> = ({ onSuccess }) => {
           {t("ApiKeyPrompt.title")}
         </h2>
         <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
-          {t("ApiKeyPrompt.description")}
+          {t("ApiKeyPrompt.description", { appName: APP_NAME })}
           <br />
           <a
             href="https://platform.openai.com/account/api-keys"

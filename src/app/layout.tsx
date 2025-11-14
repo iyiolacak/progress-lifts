@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Providers } from "./Providers";
+import { APP_FULL_TITLE } from "@/lib/appInfo";
 
 export const metadata: Metadata = {
-  title: "Locally Loop | Productivity at Localhost",
+  title: APP_FULL_TITLE,
   description: "A local-first, frictionless, gamified productivity tool",
 };
 
