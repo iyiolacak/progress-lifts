@@ -9,7 +9,9 @@
     "tooltipRecord": "Record a private voice note*",
     "listening": "Listening...",
     "tooltipBusy": "Transcribing via Whisper...",
-    "cancelRecording": "Cancel recording"
+    "cancelRecording": "Cancel recording",
+    "tooltipPrivacyLine1": "Processed by your chosen model.",
+    "tooltipPrivacyLine2": "All else stays in-browser."
   },
   "Footer": {
     "copyright": "© 2025 {appName}",
@@ -28,7 +30,11 @@
       "saveButton": "Save Key",
       "errorEmpty": "Please enter your OpenAI API key.",
       "successToast": "{appName} is ready! Get into your flow.",
-      "tap-to-api-tutorial": "Tap to see 1-minute OpenAI API guide"
+      "tap-to-api-tutorial": "Tap to see 1-minute OpenAI API guide",
+      "videoAlt": "How to get an API key",
+      "videoAriaLabel": "See video guide on getting your API key",
+      "closeVideo": "Close video",
+      "videoTitle": "OpenAI API Key Tutorial Video"
     }
   },
   "SettingsPage": {
@@ -41,12 +47,6 @@
       "openai": "OpenAI GPT‑4o",
       "gemini": "Google Gemini 2.5 Flash"
     },
-    "apiKey": {
-      "title": "API Key",
-      "description": "Enter your API key for the selected model provider. This key is used to authenticate your requests to the LLM service.",
-      "placeholder": "Enter your API key",
-      "saveButton": "Save API Key"
-    },
     "locale": {
       "title": "Language",
       "description": "Select your preferred language for the app interface. This setting will change the language of the app's text and messages.",
@@ -57,12 +57,38 @@
     "voiceInput": {
       "title": "Voice Input",
       "description": "Control what happens to raw audio recordings after transcription. On opt-in voice records are stored locally for listening them again later.<br></br>If you want to see your records in your timeline(on device), opt it in",
-      "keepAudio": "Keep Original Audio"
+      "keepAudio": "Keep Original Audio",
+      "toggleAria": "Toggle saving original audio"
     },
     "diagnostics": {
       "title": "Diagnostics",
       "description": "Share anonymous logs to help. No personal data is included and helps developers improve this project. Default: Off.",
-      "enableCrashReports": "Enable Crash Reports"
+      "enableCrashReports": "Enable Crash Reports",
+      "toggleAria": "Toggle crash report sharing"
+    },
+    "apiKey": {
+      "title": "API Key",
+      "description": "Enter your API key for the selected model provider. This key is used to authenticate your requests to the LLM service.",
+      "placeholder": "Enter your API key",
+      "saveButton": "Save API Key",
+      "editButton": "Edit",
+      "modalTitle": "Replace API key",
+      "modalDescription": "For safety, paste the full key twice. Small edits that look accidental will be blocked unless you explicitly override.",
+      "newKeyLabel": "New API key",
+      "confirmKeyLabel": "Re-enter new API key",
+      "newKeyPlaceholder": "Paste your new key...",
+      "confirmKeyPlaceholder": "Paste the same key again...",
+      "mismatchError": "Keys do not match. Please paste the exact same value.",
+      "smallChangeWarning": "This looks like a very small change ({count} edit{count, plural, one {} other {s}}).",
+      "firstDifference": "First difference near index {index}:",
+      "oldKeyPreview": "old: \"...{value}...\"",
+      "newKeyPreview": "new: \"...{value}...\"",
+      "forceSaveLabel": "I'm sure—save this small change",
+      "acknowledgeReplace": "I understand this will replace the existing key.",
+      "ariaOverrideSmallChange": "Override small change guard",
+      "ariaAcknowledgeReplace": "Acknowledge replacement",
+      "cancelButton": "Cancel",
+      "saveButton": "Save API Key"
     },
     "footer": "No servers. No telemetry. Full privacy. Always local."
   }

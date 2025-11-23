@@ -33,7 +33,7 @@ export function DiagnosticsCard() {
         <Switch
           checked={shareDiagnostics}
           onCheckedChange={setShareDiagnostics}
-          aria-label="Toggle crash reports"
+          aria-label={t("diagnostics.toggleAria")}
         />
       </CardContent>
     </Card>

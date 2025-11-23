@@ -121,14 +121,14 @@ export const ApiKeyPrompt: React.FC<ApiKeyPromptProps> = ({
                 `}
                 onClick={() => setShowVideo(true)}
                 tabIndex={0}
-                aria-label="See video guide on getting your API key"
+                aria-label={t("videoAriaLabel")}
                 role="button"
               >
                 {!showVideo ? (
                   <div className="w-full h-full min-h-[180px] relative rounded-2xl overflow-hidden">
                     <Image
                       src="/pictures/get_api_key.png"
-                      alt="How to get an API key"
+                      alt={t("videoAlt")}
                       className="w-full h-full rounded-2xl object-cover"
                       width={480}
                       height={320}
@@ -153,15 +153,15 @@ export const ApiKeyPrompt: React.FC<ApiKeyPromptProps> = ({
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowFullScreen
                         className="w-full h-full rounded-xl"
-                        title="OpenAI API Key Tutorial Video"
-                        aria-label="OpenAI API Key Tutorial Video"
+                        title={t("videoTitle")}
+                        aria-label={t("videoTitle")}
                         tabIndex={0}
                         frameBorder="0"
                       />
                     </motion.div>
                     <button
                       className="absolute top-2 right-2 bg-black/60 hover:bg-black/80 text-white rounded-full p-2 z-50"
-                      aria-label="Close video"
+                      aria-label={t("closeVideo")}
                       onClick={(e) => {
                         e.stopPropagation();
                         setShowVideo(false);

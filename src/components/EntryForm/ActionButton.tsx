@@ -298,9 +298,9 @@ const PrimaryButton = React.memo(
               <Lock strokeWidth={2} /> {tooltip}
             </p>
             <p className="text-xs text-muted-foreground">
-              *Processed by your chosen model.
+              *{t("tooltipPrivacyLine1")}
               <br />
-              All else stays in-browser.
+              {t("tooltipPrivacyLine2")}
             </p>
           </TooltipContent>
         </Tooltip>

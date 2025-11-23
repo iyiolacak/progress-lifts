@@ -1,6 +1,6 @@
 {
   "HomePage": {
-    "title": "Merhaba `Dünya!"
+    "title": "Merhaba Dünya!"
   },
   "CommandForm": {
     "placeholder": "Ne yapmak istediğinizi yazın veya bir sesli not kaydedin...",
@@ -8,7 +8,10 @@
     "tooltipRecording": "Kaydediliyor... yerel olarak kaydedildi*",
     "tooltipRecord": "Özel bir sesli not kaydet*",
     "listening": "Dinleniyor...",
-    "tooltipBusy": "Whisper ile sesten yazılıyor..."
+    "tooltipBusy": "Whisper ile sesten yazılıyor...",
+    "cancelRecording": "Kaydı iptal et",
+    "tooltipPrivacyLine1": "Seçtiğiniz model tarafından işlenir.",
+    "tooltipPrivacyLine2": "Geri kalan her şey tarayıcıda kalır."
   },
   "Footer": {
     "copyright": "© 2025 {appName}",
@@ -27,7 +30,11 @@
       "saveButton": "Anahtarı Kaydet",
       "errorEmpty": "Lütfen OpenAI API anahtarınızı girin.",
       "successToast": "{appName} hazır! Akışınıza geçebilirsiniz.",
-      "tap-to-api-tutorial": "1 dakikada OpenAI API anahtarı al"
+      "tap-to-api-tutorial": "1 dakikada OpenAI API anahtarı al",
+      "videoAlt": "API anahtarı nasıl alınır",
+      "videoAriaLabel": "API anahtarınızı almak için videolu rehber",
+      "closeVideo": "Videoyu kapat",
+      "videoTitle": "OpenAI API Anahtarı Video Rehberi"
     }
   },
   "SettingsPage": {
@@ -44,7 +51,25 @@
       "title": "API Anahtarı",
       "description": "Seçilen model sağlayıcısı için API anahtarınızı girin. Bu anahtar, LLM hizmetine yaptığınız istekleri kimlik doğrulamak için kullanılır.",
       "placeholder": "API anahtarınızı girin",
-      "saveButton": "API Anahtarını Kaydet"
+      "saveButton": "API Anahtarını Kaydet",
+      "editButton": "Düzenle",
+      "modalTitle": "API anahtarını değiştir",
+      "modalDescription": "Güvenlik için anahtarı iki kez yapıştırın. Yanlışlıkla yapılmış gibi görünen küçük değişiklikler, özellikle onaylamadıkça engellenir.",
+      "newKeyLabel": "Yeni API anahtarı",
+      "confirmKeyLabel": "Yeni API anahtarını tekrar girin",
+      "newKeyPlaceholder": "Yeni anahtarınızı yapıştırın...",
+      "confirmKeyPlaceholder": "Aynı anahtarı tekrar yapıştırın...",
+      "mismatchError": "Anahtarlar eşleşmiyor. Lütfen aynı değeri yapıştırın.",
+      "smallChangeWarning": "Bu çok küçük bir değişiklik gibi görünüyor ({count} düzenleme).",
+      "firstDifference": "İlk fark {index} indeksinde:",
+      "oldKeyPreview": "eski: \"...{value}...\"",
+      "newKeyPreview": "yeni: \"...{value}...\"",
+      "forceSaveLabel": "Eminim — bu küçük değişikliği kaydet",
+      "acknowledgeReplace": "Mevcut anahtarın değiştirileceğini anlıyorum.",
+      "ariaOverrideSmallChange": "Küçük değişiklik kontrolünü geçersiz kıl",
+      "ariaAcknowledgeReplace": "Değiştirmeyi onayla",
+      "cancelButton": "İptal",
+      "saveButton": "Anahtarı Kaydet"
     },
     "locale": {
       "title": "Dil",
@@ -56,12 +81,14 @@
     "voiceInput": {
       "title": "Ses Girişi",
       "description": "Ham ses kayıtlarının transkripsiyondan sonra ne olacağını kontrol edin. Onay verdiğinizde, ses kayıtları daha sonra tekrar dinlemek için yerel olarak saklanır.<br/>Kayıtlarınızı zaman tünelinizde (cihazda) görmek istiyorsanız, bu seçeneği etkinleştirin.",
-      "keepAudio": "Orijinal Sesi Sakla"
+      "keepAudio": "Orijinal Sesi Sakla",
+      "toggleAria": "Orijinal sesi kaydetmeyi aç veya kapat"
     },
     "diagnostics": {
       "title": "Teşhis",
       "description": "Yardımcı olmak için anonim günlükleri paylaşın. Hiçbir kişisel veri dahil edilmez ve geliştiricilerin bu projeyi iyileştirmesine yardımcı olur. Varsayılan: Kapalı.",
-      "enableCrashReports": "Çökme Raporlarını Etkinleştir"
+      "enableCrashReports": "Çökme Raporlarını Etkinleştir",
+      "toggleAria": "Çökme raporlarını paylaşmayı aç veya kapat"
     },
     "footer": "Sunucu yok. Telemetri yok. Tam gizlilik. Her zaman yerel."
   }

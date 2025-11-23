@@ -1,7 +1,6 @@
 "use client";
 import { useTranslations } from "next-intl";
 import React from "react";
-import { FlowTotem } from "./settings/components/flow-totem/FlowTotem";
 
 const HomePage = () => {
   const t = useTranslations("HomePage");

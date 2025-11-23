@@ -125,7 +125,7 @@ export function ModelProviderCard() {
         {/* API Key - read-only with explicit Edit flow */}
         <div className="space-y-2">
           <Label htmlFor="apiKey" className="text-lg">
-            {t("apiKey.description")}
+            {t("apiKey.title")}
           </Label>
           <div className="flex items-center gap-3">
             <Input
@@ -135,35 +135,33 @@ export function ModelProviderCard() {
               value={maskKey(apiKey)}
               readOnly
               aria-readonly
-              title="Click Edit to replace the key"
+              title={t("apiKey.modalDescription")}
             />
             <Dialog open={open} onOpenChange={onOpenChange}>
               <DialogTrigger asChild>
                 <Button type="button" variant="secondary">
-                  Edit
+                  {t("apiKey.editButton")}
                 </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-lg">
                 <DialogHeader>
-                  <DialogTitle>Replace API key</DialogTitle>
+                  <DialogTitle>{t("apiKey.modalTitle")}</DialogTitle>
                   <DialogDescription className="text-base">
-                    For safety, paste the full key twice. Small edits that
-                    look accidental will be blocked unless you explicitly
-                    override.
+                    {t("apiKey.modalDescription")}
                   </DialogDescription>
                 </DialogHeader>
 
                 {/* New key */}
                 <div className="space-y-2">
                   <Label htmlFor="newKey" className="text-base">
-                    New API key
+                    {t("apiKey.newKeyLabel")}
                   </Label>
                   <Input
                     id="newKey"
                     type="password"
                     value={newKey}
                     onChange={(e) => setNewKey(e.target.value)}
-                    placeholder="Paste your new key…"
+                    placeholder={t("apiKey.newKeyPlaceholder")}
                     autoComplete="off"
                   />
                 </div>
@@ -171,19 +169,19 @@ export function ModelProviderCard() {
                 {/* Confirm key */}
                 <div className="space-y-2">
                   <Label htmlFor="confirmKey" className="text-base">
-                    Re-enter new API key
+                    {t("apiKey.confirmKeyLabel")}
                   </Label>
                   <Input
                     id="confirmKey"
                     type="password"
                     value={confirmKey}
                     onChange={(e) => setConfirmKey(e.target.value)}
-                    placeholder="Paste the same key again…"
+                    placeholder={t("apiKey.confirmKeyPlaceholder")}
                     autoComplete="off"
                   />
                   {bothEntered && !matches && (
                     <p className="text-sm text-destructive mt-1">
-                      Keys do not match. Please paste the exact same value.
+                      {t("apiKey.mismatchError")}
                     </p>
                   )}
                 </div>
@@ -192,33 +190,32 @@ export function ModelProviderCard() {
                 {apiKey && newKey && suspiciousSmallEdit && (
                   <div className="rounded-md border border-amber-600/40 bg-amber-500/10 p-3">
                     <p className="text-sm font-medium text-amber-600">
-                      This looks like a very small change (
-                      {distanceFromCurrent} edit
-                      {distanceFromCurrent === 1 ? "" : "s"}).
+                      {t("apiKey.smallChangeWarning", {
+                        count: distanceFromCurrent,
+                      })}
                     </p>
                     {diff && (
-                      <p className="text-sm text-muted-foreground mt-1">
-                        First difference near index{" "}
-                        <span className="font-mono">{diff.index}</span>:
-                        <br />
-                        <span className="font-mono">
-                          old: “…{diff.left}…”
-                        </span>
-                        <br />
-                        <span className="font-mono">
-                          new: “…{diff.right}…”
-                        </span>
-                      </p>
+                      <div className="text-sm text-muted-foreground mt-1 space-y-0.5">
+                        <p>
+                          {t("apiKey.firstDifference", { index: diff.index })}
+                        </p>
+                        <p className="font-mono">
+                          {t("apiKey.oldKeyPreview", { value: diff.left })}
+                        </p>
+                        <p className="font-mono">
+                          {t("apiKey.newKeyPreview", { value: diff.right })}
+                        </p>
+                      </div>
                     )}
                     <div className="flex items-center gap-2 mt-2">
                       <Switch
                         id="forceSmall"
                         checked={forceSmallChange}
                         onCheckedChange={setForceSmallChange}
-                        aria-label="Override small change guard"
+                        aria-label={t("apiKey.ariaOverrideSmallChange")}
                       />
                       <Label htmlFor="forceSmall" className="text-sm">
-                        I’m sure—save this small change
+                        {t("apiKey.forceSaveLabel")}
                       </Label>
                     </div>
                   </div>
@@ -230,10 +227,10 @@ export function ModelProviderCard() {
                     id="ackReplace"
                     checked={ackReplace}
                     onCheckedChange={setAckReplace}
-                    aria-label="Acknowledge replacement"
+                    aria-label={t("apiKey.ariaAcknowledgeReplace")}
                   />
                   <Label htmlFor="ackReplace" className="text-sm">
-                    I understand this will replace the existing key.
+                    {t("apiKey.acknowledgeReplace")}
                   </Label>
                 </div>
 
@@ -243,14 +240,14 @@ export function ModelProviderCard() {
                     variant="ghost"
                     onClick={() => setOpen(false)}
                   >
-                    Cancel
+                    {t("apiKey.cancelButton")}
                   </Button>
                   <Button
                     type="button"
                     onClick={handleSave}
                     disabled={!canSave}
                   >
-                    Save key
+                    {t("apiKey.saveButton")}
                   </Button>
                 </DialogFooter>
               </DialogContent>
