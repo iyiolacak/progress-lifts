@@ -9,15 +9,16 @@ import {
   DiagnosticsCard,
 } from "./components";
 import { APP_NAME } from "@/lib/appInfo";
+import EntryFormPositionSetting from "./components/EntryFormPositionSetting";
 
 export default function PrivacySettings() {
   const t = useTranslations("SettingsPage");
 
   return (
-    <div className="mx-auto max-w-2xl p-6 space-y-10">
+    <div className="mx-auto max-w-3xl p-6 space-y-10">
       <div>
-        <h1 className="text-4xl font-bold">{t("title")}</h1>
-        <p className="mt-4 text-lg leading-relaxed text-muted-foreground text-wrap">
+        <h1 className="text-4xl font-medium text-foreground">{t("title")}</h1>
+        <p className="mt-4 paragraph-sm">
           {t.rich("description", {
             appName: APP_NAME,
             strong: (chunks) => <strong>{chunks}</strong>,
@@ -26,12 +27,17 @@ export default function PrivacySettings() {
           })}
         </p>
       </div>
+      <Separator className="" />
+      <EntryFormPositionSetting />
+      <Separator />
 
       <ModelProviderCard />
+      <Separator />
+
       <VoiceInputCard />
       <DiagnosticsCard />
       <Separator />
-      
+
       <p className="text-center text-base">{t("footer")}</p>
     </div>
   );
