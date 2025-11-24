@@ -3,7 +3,8 @@
     "title": "Merhaba Dünya!"
   },
   "CommandForm": {
-    "placeholder": "Ne yapmak istediğinizi yazın veya bir sesli not kaydedin...",
+    "placeholder": "Produfy'nin sırada ne yapmasını istediğinizi söyleyin — adımları paylaşın, bağlamı yapıştırın veya mikrofona dokunup anlatın.",
+    "inputLabel": "Produfy'nin neyi geliştirmesini veya düzeltmesini istiyorsunuz?",
     "tooltipSend": "Modele özel olarak gönder*",
     "tooltipRecording": "Kaydediliyor... yerel olarak kaydedildi*",
     "tooltipRecord": "Özel bir sesli not kaydet*",
@@ -22,7 +23,7 @@
   },
   "Drawer": {
     "ApiKeyPrompt": {
-      "title": "ChatGPT Anahtarınızı Bağlayalım",
+      "title": "ChatGPT Anahtarınızı Bağlayalım ",
       "description": "{appName} uygulamasının çalışması için bir OpenAI API anahtarı gerekiyor. Aşağıya yapıştırın veya OpenAI Platformu'ndan bir anahtar alın.",
       "openaiPlatformLink": "OpenAI Platformu",
       "inputLabel": "OpenAI API Anahtarınız",

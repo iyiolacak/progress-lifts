@@ -3,7 +3,8 @@
     "title": "Hello world!"
   },
   "CommandForm": {
-    "placeholder": "Describe what you want to build or record a voice note...",
+    "placeholder": "Tell PL what to build next—share steps, paste context, or tap the mic to narrate.",
+    "inputLabel": "What do you want Produfy to build or fix?",
     "tooltipSend": "Send privately to model*",
     "tooltipRecording": "Recording... saved locally*",
     "tooltipRecord": "Record a private voice note*",
@@ -22,7 +23,7 @@
   },
   "Drawer": {
     "ApiKeyPrompt": {
-      "title": "Let’s Connect Your ChatGPT Key",
+      "title": "Connect your ChatGPT key — or skip for now",
       "description": "{appName} requires an OpenAI API key to function. Paste your key below. You can get one from the OpenAI Platform.",
       "openaiPlatformLink": "OpenAI Platform",
       "inputLabel": "Your OpenAI API Key",
@@ -65,6 +66,14 @@
       "description": "Share anonymous logs to help. No personal data is included and helps developers improve this project. Default: Off.",
       "enableCrashReports": "Enable Crash Reports",
       "toggleAria": "Toggle crash report sharing"
+    },
+    "entryFormPosition": {
+      "title": "Command bar placement",
+      "description": "Decide where the main command box lives. Keep it pinned in the header for always-on access or move it below the content so it's right next to your results.",
+      "label": "Placement",
+      "selectPlaceholder": "Choose placement",
+      "optionAbove": "Pin in header (always visible)",
+      "optionBelow": "Move below the content"
     },
     "apiKey": {
       "title": "API Key",

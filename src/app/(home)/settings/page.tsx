@@ -17,10 +17,14 @@ export default function PrivacySettings() {
     <div className="mx-auto max-w-2xl p-6 space-y-10">
       <div>
         <h1 className="text-4xl font-bold">{t("title")}</h1>
-        <p
-          className="mt-4 text-lg leading-relaxed text-muted-foreground text-wrap"
-          dangerouslySetInnerHTML={{ __html: t.raw("description", { appName: APP_NAME }) }}
-        />
+        <p className="mt-4 text-lg leading-relaxed text-muted-foreground text-wrap">
+          {t.rich("description", {
+            appName: APP_NAME,
+            strong: (chunks) => <strong>{chunks}</strong>,
+            em: (chunks) => <em>{chunks}</em>,
+            br: () => <br />,
+          })}
+        </p>
       </div>
 
       <ModelProviderCard />

@@ -2,14 +2,19 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    './app/**/*.{js,ts,jsx,tsx}',
-    './pages/**/*.{js,ts,jsx,tsx}',
-    './components/**/*.{js,ts,jsx,tsx}',
+    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/**/*.{js,ts,jsx,tsx,mdx}',
   ],
-    safelist: ['font-minercraftory'], // <- optional safety net
+    safelist: ['font-minercraftory', 'font-inter'], // <- optional safety net
   theme: {
     extend: {
       fontFamily: {
+        sans: ['var(--font-family-sans)'],
+        object: ['var(--font-family-alt)'],
+        inter: ['var(--font-family-inter)'],
+        mono: ['var(--font-geist-mono)'],
       },
       colors: {
         product: 'var(--color-product)',
