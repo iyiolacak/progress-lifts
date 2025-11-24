@@ -8,6 +8,7 @@ import { EntryTextarea } from "./EntryTextarea";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { FormCover } from "./FormCover";
+import { useTranslations } from "next-intl";
 
 type CommandMachine = ReturnType<typeof useCommandMachine>;
 
@@ -16,6 +17,7 @@ interface EntryFormViewProps {
 }
 
 export function EntryFormView({ machine }: EntryFormViewProps) {
+  const t = useTranslations("CommandForm");
   const {
     text,
     onChange,
@@ -34,7 +36,7 @@ export function EntryFormView({ machine }: EntryFormViewProps) {
   } = machine;
 
   const isDisabled = isBusy || isRecording;
-  const placeholder = isRecording ? "Listening…" : "Type a command…";
+  const placeholder = isRecording ? t("listening") : t("placeholder");
   const handleSubmit = React.useCallback(() => { if (canSubmit) submit(); }, [canSubmit, submit]);
 
   // Make the underlying row inert while overlay blocks it (prevents focus/AT leaks)
@@ -62,6 +64,7 @@ export function EntryFormView({ machine }: EntryFormViewProps) {
           onSubmit={() => handleSubmit()}
           readOnly={isDisabled}
           placeholder={placeholder}
+          aria-label={t("inputLabel")}
           aria-busy={isBusy}
           className={cn(
             "relative z-10 flex-1",
@@ -81,7 +84,7 @@ export function EntryFormView({ machine }: EntryFormViewProps) {
         {/* The brand cover; no buttons visible while active */}
         <FormCover
           active={overlayActive}
-          label="Listening…"
+          label={t("listening")}
           className="bg-primary"   // or: "bg-gradient-to-br from-primary to-primary/90"
         />
       </div>
