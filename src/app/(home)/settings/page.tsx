@@ -7,6 +7,7 @@ import {
   ModelProviderCard,
   VoiceInputCard,
   DiagnosticsCard,
+  EntryFocusSetting,
 } from "./components";
 import { APP_NAME } from "@/lib/appInfo";
 import EntryFormPositionSetting from "./components/EntryFormPositionSetting";
@@ -21,6 +22,8 @@ export default function PrivacySettings() {
       </div>
       <Separator className="" />
       <EntryFormPositionSetting />
+      <Separator />
+      <EntryFocusSetting />
       <Separator />
 
       <ModelProviderCard />

@@ -30,6 +30,18 @@ interface SettingsSlice {
 
   entryFormPosition: "top" | "bottom";
   setEntryFormPosition: (position: "top" | "bottom") => void;
+  enableEntryFocusShortcuts: boolean;
+  setEnableEntryFocusShortcuts: (enabled: boolean) => void;
+  focusShortcutSlash: boolean;
+  setFocusShortcutSlash: (enabled: boolean) => void;
+  focusShortcutEnter: boolean;
+  setFocusShortcutEnter: (enabled: boolean) => void;
+  focusShortcutTypeToFocus: boolean;
+  setFocusShortcutTypeToFocus: (enabled: boolean) => void;
+  focusShortcutCmdJ: boolean;
+  setFocusShortcutCmdJ: (enabled: boolean) => void;
+  focusAutoOnLoad: boolean;
+  setFocusAutoOnLoad: (enabled: boolean) => void;
 }
 // --- Combined AppSettingsStore Type ---
 
@@ -82,6 +94,25 @@ const createSettingsSlice: StateCreator<
 
   entryFormPosition: "below",
   setEntryFormPosition: (position) => set({ entryFormPosition: position }),
+
+  enableEntryFocusShortcuts: true,
+  setEnableEntryFocusShortcuts: (enabled) =>
+    set({ enableEntryFocusShortcuts: enabled }),
+  focusShortcutSlash: true,
+  setFocusShortcutSlash: (enabled) =>
+    set({ focusShortcutSlash: enabled }),
+  focusShortcutEnter: true,
+  setFocusShortcutEnter: (enabled) =>
+    set({ focusShortcutEnter: enabled }),
+  focusShortcutTypeToFocus: true,
+  setFocusShortcutTypeToFocus: (enabled) =>
+    set({ focusShortcutTypeToFocus: enabled }),
+  focusShortcutCmdJ: true,
+  setFocusShortcutCmdJ: (enabled) =>
+    set({ focusShortcutCmdJ: enabled }),
+  focusAutoOnLoad: true,
+  setFocusAutoOnLoad: (enabled) =>
+    set({ focusAutoOnLoad: enabled }),
 });
 
 // --- Main AppSettings Store ---

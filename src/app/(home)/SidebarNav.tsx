@@ -117,7 +117,7 @@ export function SidebarNav() {
               <SidebarMenuItem>
                 <SidebarMenuButton
                   onClick={() => setSearchOpen(true)}
-                  className="justify-between h-11 rounded-lg bg-muted/70 pl-3 pr-4 text-sm"
+                  className="justify-between h-11 rounded-lg bg-muted/70 pl-3 pr-4"
                 >
         <Search className="h-4 w-4" />
         Search tasks...

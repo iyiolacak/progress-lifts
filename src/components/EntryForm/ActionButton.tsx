@@ -39,6 +39,7 @@ export interface ActionButtonProps {
   tooltipMain?: string;
   volume?: number;
   className?: string;
+  actionRef?: React.Ref<HTMLButtonElement>;
 }
 
 /* ------------------------------------------------------------------------------------------ */
@@ -245,6 +246,7 @@ const PrimaryButton = React.memo(
     onPrimary,
     onHover,
     volume = 0,
+    buttonRef,
   }: {
     mode: Mode;
     canSubmit: boolean;
@@ -253,6 +255,7 @@ const PrimaryButton = React.memo(
     onPrimary: () => void;
     onHover: () => void;
     volume?: number;
+    buttonRef?: React.Ref<HTMLButtonElement>;
   }) {
     const t = useTranslations("CommandForm");
 
@@ -264,6 +267,7 @@ const PrimaryButton = React.memo(
         <Tooltip delayDuration={150}>
           <TooltipTrigger asChild>
             <motion.button
+              ref={buttonRef}
               type="button"
               onClick={onPrimary}
               onMouseEnter={onHover}
@@ -338,6 +342,7 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
   tooltipMain,
   volume = 0,
   className,
+  actionRef,
 }) => {
   const sfx = useHoverClickSounds();
   const t = useTranslations("CommandForm");
@@ -395,6 +400,7 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
             onPrimary={handlePrimaryAction}
             onHover={sfx.onMouseEnter}
             volume={volume}
+            buttonRef={actionRef}
           />
         </div>
       </div>

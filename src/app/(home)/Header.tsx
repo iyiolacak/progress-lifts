@@ -15,13 +15,12 @@ const Header = () => {
         isTop ? "sticky top-0" : "fixed inset-x-0 bottom-0"
       )}
     >
-
       {/* directional fade so content behind doesn’t distract */}
 
       <div
         className={cn(
           "px-4 md:px-8 w-full justify-between flex gap-3",
-          isTop ? "py-4" : "pt-2 pb-8",
+          isTop ? "py-4" : "pt-2 pb-8"
         )}
       >
         <div className="">

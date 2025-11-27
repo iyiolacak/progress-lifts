@@ -152,7 +152,7 @@ export const EntryTextarea = React.forwardRef<CommandTextareaHandle, CommandText
         aria-disabled={readOnly}
         placeholder={placeholder}
         className={cn(
-          "relative z-10 w-full resize-none overflow-hidden rounded-lg border border-transparent bg-input-dark text-base leading-6 text-gray-100",
+          "relative z-10 w-full resize-none overflow-hidden rounded-lg border border-transparent bg-product-gray text-base leading-6 text-gray-100",
           "overflow-y-auto px-3 py-2.5 md:py-3 md:text-lg md:leading-7",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-product focus-visible:ring-offset-0",
           "min-h-[2.75rem] md:min-h-[3.25rem] transition-all duration-200 ease-out",
