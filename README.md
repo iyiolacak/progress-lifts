@@ -1,7 +1,7 @@
 # Progress Lifts
 
 If you've ever dropped a to‑do app because it became a chore, Progress Lifts is the antidote.
-Gamified, conventional automatized TODO handling like texting, satisfying and private. 
+Gamified, conventional automatized TODO handling like texting(chat-interface), satisfying and private. 
 
 ---
 
@@ -14,10 +14,11 @@ No clutter. No planning overhead. Just **type what you did or will do next** and
 
 **The magic:**
 
-* **Game‑like momentum**: visible XP, progress animations, streaks.
+* **Game‑like momentum**: visible XP, progress animations, streaks. Instant dopamine loop is needed; Standard apps give you a silent checkbox. Progress Lifts gives you immediate visual feedback, XP gain, and streak animations. It gamifies the act of tracking.
 * **Privacy by design**: all history, stats, and settings stay on your device.
 * **Only one connection**: to the LLM you choose (BYOK OpenAI).
 * **Zero busywork**: no grooming lists or shuffling boards.
+**Keyboard-Centric Velocity**: App gets ultra fast when you get used to it. 
 
 Capture → Nudge → Do → Reward → Reflect → Repeat
 
@@ -51,6 +52,8 @@ LLM Service (default: OpenAI(BYOK or hosted), or any provider you choose)
    ↓
 Your Device ── results kept local ──► No telemetry
 ```
+
+This is not a To-Do list. It is a "Did-Do" and "Will-Do" Stream. 
 
 * **Ambient Input**: `/` to focus, type, hit Enter — done.
 * **Instant Logging**: “Fix login bug” or “Plan Q3 deck” — captured immediately.
@@ -98,7 +101,7 @@ Open **[http://localhost:3000](http://localhost:3000)** and paste your **OpenAI 
 
 ## Roadmap
 
-* Self‑hosted privacy proxy (optional)
+* Self-hosted privacy proxy for those who want to scrub PII before it hits the LLM.
 * Encrypted peer‑to‑peer sync
 * XP rule customization kits
 * Terminal client

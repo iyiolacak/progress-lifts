@@ -2,6 +2,8 @@
 import Footer from "./Footer";
 import Header from "./Header";
 import { cn } from "@/lib/utils";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { SidebarNav } from "./SidebarNav";
 import { useEntryFormPosition } from "../hooks/useEntryFormPosition";
 
 export default function RootLayout({
@@ -11,22 +13,22 @@ export default function RootLayout({
 }) {
   const { isTop } = useEntryFormPosition();
   return (
-    <div className="min-h-screen flex flex-col">
-      {/* ---------- Header ---------- */}
-      <Header />
+    <SidebarProvider>
+      <SidebarNav />
+      <SidebarInset>
+        <div className="min-h-screen flex flex-col">
+          {/* ---------- Header ---------- */}
+          <Header />
 
-      {/* ---------- Main ---------- */}
-      <main
-        className={cn(
-          "flex-1 h-screen p-6 overflow-y-auto",
-          !isTop && "pb-28"
-        )}
-      >
-        {children}
-      </main>
-
-      {/* ---------- Footer ---------- */}
-      <Footer />
-    </div>
+          {/* ---------- Main ---------- */}
+          <section
+            className={cn("flex-1 p-6 overflow-y-auto", !isTop && "pb-28")}
+          >
+            {children}
+            <Footer />
+          </section>
+        </div>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }
