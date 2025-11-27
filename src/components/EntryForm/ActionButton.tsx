@@ -373,7 +373,7 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
   return (
     <div
       className={cn(
-        "absolute right-2 top-2 z-30 flex h-10 items-center justify-end gap-x-2",
+        "flex h-10 items-center justify-end gap-x-2",
         className
       )}
     >

@@ -8,7 +8,7 @@
     "tooltipSend": "Send privately to model*",
     "tooltipRecording": "Recording... saved locally*",
     "tooltipRecord": "Record a private voice note*",
-    "listening": "Listening...",
+    "listening": "Listening",
     "tooltipBusy": "Transcribing via Whisper...",
     "cancelRecording": "Cancel recording",
     "tooltipPrivacyLine1": "Processed by your chosen model.",

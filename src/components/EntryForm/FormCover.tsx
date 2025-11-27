@@ -18,18 +18,26 @@ export function FormCover({ active, label = "Listening", className, children }: 
       aria-live="polite"
       aria-label={label}
       className={cn(
-        "absolute inset-0 z-20 transition-opacity duration-150 pointer-events-none overflow-hidden",
+        "absolute bg-gray-800 inset-0 z-20 transition-opacity duration-150 pointer-events-none overflow-hidden",
         active ? "opacity-100" : "opacity-0",
         className
       )}
       style={{
-        backgroundImage:
-          "linear-gradient(135deg, rgba(52,211,153,0.55) 0%, rgba(34,197,94,0.65) 35%, rgba(16,185,129,0.7) 50%, rgba(52,211,153,0.55) 75%, rgba(34,197,94,0.65) 100%)",
-        backgroundSize: "240% 240%",
+        backgroundSize: "100% 100%",
       }}
-      animate={{ backgroundPosition: ["0% 50%", "100% 50%"] }}
-      transition={{ duration: 7, ease: "linear", repeat: Infinity }}
     >
+      {/* subtle looping overlay */}
+      <motion.div
+        aria-hidden
+        className="absolute inset-0 z-0 opacity-35"
+        style={{
+          backgroundImage:
+            "repeating-linear-gradient(120deg, rgba(255,255,255,0.12) 0, rgba(255,255,255,0.12) 4px, transparent 6px, transparent 12px)",
+          backgroundSize: "140% 140%",
+        }}
+        animate={{ backgroundPosition: ["0% 0%", "100% 100%"] }}
+        transition={{ duration: 4, ease: "linear", repeat: Infinity }}
+      />
       {children ?? (
         <div className="flex h-full w-full items-center justify-center px-4">
           <span className="sr-only">{label}</span>

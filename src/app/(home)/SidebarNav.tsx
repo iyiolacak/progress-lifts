@@ -28,6 +28,7 @@ import { cn } from "@/lib/utils";
 import { useEntryFormPosition } from "../hooks/useEntryFormPosition";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import ProdAtLocalhostLogo from "@/components/Logo";
 
 const navItems = [
   {
@@ -91,7 +92,10 @@ export function SidebarNav() {
     <>
       <Sidebar
         collapsible="icon"
-        className="border-r z-12 border-border/80"
+        className={cn(
+          "o z-12 border-border/80",
+          isTop && "top-[var(--navbar-height)] h-[calc(100svh-var(--navbar-height))]"
+        )}
         style={{
           // Align sidebar tokens with the header/background palette
           "--sidebar": "var(--background)",
