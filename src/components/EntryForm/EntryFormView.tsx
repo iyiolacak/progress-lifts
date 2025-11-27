@@ -11,6 +11,7 @@ import { FormCover } from "./FormCover";
 import { useTranslations } from "next-intl";
 import { useAppSettings } from "@/localdb/store/appPreferences";
 import { useShallow } from "zustand/react/shallow";
+import { Kbd } from "@/components/ui/kbd";
 
 type CommandMachine = ReturnType<typeof useCommandMachine>;
 
@@ -53,15 +54,13 @@ export function EntryFormView({ machine }: EntryFormViewProps) {
   const placeholder = isRecording ? t("listening") : t("placeholder");
   const firstHint =
     (enableFocusShortcuts && focusOptions.slash && "/") ||
+    (enableFocusShortcuts && focusOptions.enter && "Enter") ||
     (enableFocusShortcuts && focusOptions.cmdJ && "Cmd/Ctrl+J") ||
     null;
-  const placeholderHint =
-    enableFocusShortcuts && firstHint
-      ? `${placeholder} [${firstHint}]`
-      : placeholder;
   const handleSubmit = React.useCallback(() => { if (canSubmit) submit(); }, [canSubmit, submit]);
   const textareaRef = React.useRef<HTMLTextAreaElement | null>(null);
   const actionRef = React.useRef<HTMLButtonElement | null>(null);
+  const hintRef = React.useRef<HTMLDivElement | null>(null);
 
   const focusInput = React.useCallback(() => {
     textareaRef.current?.focus({ preventScroll: false });
@@ -190,7 +189,7 @@ export function EntryFormView({ machine }: EntryFormViewProps) {
           onSubmit={() => handleSubmit()}
           maxRows={6}
           readOnly={isDisabled}
-          placeholder={placeholderHint}
+          placeholder={placeholder}
           aria-label={t("inputLabel")}
           aria-busy={isBusy}
           textareaRef={textareaRef}
@@ -218,18 +217,27 @@ export function EntryFormView({ machine }: EntryFormViewProps) {
           label={t("listening")}
           className="bg-primary z-20 rounded-lg"
         />
-        <ActionButton
-          isRecording={isRecording}
-          isBusy={isBusy}
-          canSubmit={canSubmit}
-          onRecord={startRecording}
-          onStop={stopRecording}
-          onSubmit={handleSubmit}
-          onCancel={cancelRecording}
-          volume={machine.volume}
-          className="absolute right-3 top-1/2 z-30 -translate-y-1/2"
-          actionRef={actionRef}
-        />
+        <div className="pointer-events-auto absolute right-3 top-1/2 z-30 -translate-y-1/2 flex items-center gap-1">
+          {enableFocusShortcuts && firstHint && (
+            <Kbd
+              className="pointer-events-none h-5 min-w-5 px-1 text-[11px] leading-none uppercase"
+            >
+              {firstHint}
+            </Kbd>
+          )}
+          <ActionButton
+            isRecording={isRecording}
+            isBusy={isBusy}
+            canSubmit={canSubmit}
+            onRecord={startRecording}
+            onStop={stopRecording}
+            onSubmit={handleSubmit}
+            onCancel={cancelRecording}
+            volume={machine.volume}
+            className="pointer-events-auto"
+            actionRef={actionRef}
+          />
+        </div>
       </div>
 
       {hasError && (

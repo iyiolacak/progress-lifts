@@ -93,8 +93,9 @@ export function SidebarNav() {
       <Sidebar
         collapsible="icon"
         className={cn(
-          "o z-12 border-border/80",
-          isTop && "top-[var(--navbar-height)] h-[calc(100svh-var(--navbar-height))]"
+          "z-12 border-border/80",
+          isTop &&
+            "md:[&_[data-slot=sidebar-container]]:top-[var(--navbar-height)] md:[&_[data-slot=sidebar-container]]:h-[calc(100svh-var(--navbar-height))]"
         )}
         style={{
           // Align sidebar tokens with the header/background palette

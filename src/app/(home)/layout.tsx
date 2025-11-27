@@ -22,7 +22,7 @@ export default function RootLayout({
         style={{ "--navbar-height": NAVBAR_HEIGHT } as CSSProperties}
       >
         <Header />
-        <div>
+        <div className="flex w-full flex-1 min-h-0">
           <SidebarNav />
           <SidebarInset>
             <div className="min-h-screen w-full flex flex-col">
