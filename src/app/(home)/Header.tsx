@@ -1,28 +1,35 @@
+import React from "react";
 import { EntryForm } from "@/components/EntryForm/EntryForm";
 import ProdAtLocalhostLogo from "@/components/Logo";
-import { cn } from "@/lib/utils";
-import React from "react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { cn } from "@/lib/utils";
 import { useEntryFormPosition } from "../hooks/useEntryFormPosition";
 
 const Header = () => {
   const { isTop } = useEntryFormPosition();
+
   return (
     <header
       className={cn(
-        "w-full bg-background z-40 border-b border-t",
+        "relative w-full z-9999 bg-background h-[var(--navbar-height)]",
         isTop ? "sticky top-0" : "fixed inset-x-0 bottom-0"
       )}
     >
-      <div className="h-full px-3 md:px-8 mx-auto max-w-full grid grid-cols-[auto_1fr_auto] items-center gap-3">
-        <div className="flex items-center gap-2">
-          <SidebarTrigger className="md:hidden" />
+
+      {/* directional fade so content behind doesn’t distract */}
+
+      <div
+        className={cn(
+          "px-4 md:px-8 w-full justify-between flex gap-3",
+          isTop ? "py-4" : "pt-2 pb-8",
+        )}
+      >
+        <div className="">
           <ProdAtLocalhostLogo />
         </div>
 
-        {/* Command bar – grows, stays centered, never shrinks below its content */}
-        <div className="flex h-full items-center justify-center pt-6 pb-4">
-          <div className="max-h-full w-full md:w-2/3 lg:w-1/2">
+        <div className="flex w-full h-full items-center justify-center">
+          <div className="w-full max-w-5xl">
             <EntryForm />
           </div>
         </div>

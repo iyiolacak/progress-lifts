@@ -91,7 +91,7 @@ export function SidebarNav() {
     <>
       <Sidebar
         collapsible="icon"
-        className="border-r border-border/80"
+        className="border-r z-12 border-border/80"
         style={{
           // Align sidebar tokens with the header/background palette
           "--sidebar": "var(--background)",
