@@ -1,6 +1,7 @@
 "use client";
 
 import React, { FormEvent, useRef, useEffect, useState } from "react";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
@@ -8,6 +9,7 @@ import { ArrowUpRight, KeyPlus, Link } from "iconoir-react/regular";
 import { useTranslations } from "next-intl";
 import { useAppSettings } from "@/localdb/store/appPreferences";
 import { APP_NAME } from "@/lib/appInfo";
+import { Plus } from "lucide-react";
 
 interface ApiKeyFormProps {
   onSuccess: () => void;
@@ -42,10 +44,10 @@ const ApiKeyForm: React.FC<ApiKeyFormProps> = ({ onSuccess }) => {
         <div className="hidden md:block mb-6 p-2 rounded-sm dark:bg-input-dark">
           <KeyPlus strokeWidth={2} width={30} height={30} className="size-6 text-muted-foreground" />
         </div>
-        <h2 className="text-3xl font-bold tracking-loose text-gray-900 dark:text-gray-50 mb-3">
+        <h2 className="text-2xl md:text-4xl max-w-2/3 font-medium tracking-normal text-gray-900 dark:text-foreground mb-6">
           {t("ApiKeyPrompt.title")}
         </h2>
-        <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
+        <p className="text-lg text-gray-600 max-w-3/4 tracking-wide font-medium dark:text-gray-300 leading-relaxed">
           {t("ApiKeyPrompt.description", { appName: APP_NAME })}
           <br />
           <a
@@ -82,19 +84,16 @@ const ApiKeyForm: React.FC<ApiKeyFormProps> = ({ onSuccess }) => {
             tabIndex={0}
             className={`
               absolute top-1/2 right-1 z-50 -translate-y-1/2
-              !h-[calc(100%-8px)] px-5 text-base rounded-md
+              !h-[calc(100%-8px)] px-5 rounded-md
               
-              bg-product text-primary-foreground
+              
               border
               border-input
               transition
               focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring
             `}
-            style={{
-              minHeight: "32px",
-              fontWeight: 500,
-            }}
           >
+            <Plus strokeWidth={3}/>
             {t("ApiKeyPrompt.saveButton")}
           </Button>
         </div>

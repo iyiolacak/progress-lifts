@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Card,
   CardHeader,
@@ -33,61 +33,15 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { firstDiff, levenshtein, maskKey } from "@/lib/utils";
 
+type SettingsTranslator = ReturnType<typeof useTranslations>;
+
 export function ModelProviderCard() {
   const t = useTranslations("SettingsPage");
 
-  // Settings slice
   const modelProvider = useAppSettings((s) => s.modelProvider);
   const setModelProvider = useAppSettings((s) => s.setModelProvider);
   const apiKey = useAppSettings((s) => s.apiKey);
   const setApiKey = useAppSettings((s) => s.setApiKey);
-
-  // Modal state for editing the key
-  const [open, setOpen] = useState(false);
-  const [newKey, setNewKey] = useState("");
-  const [confirmKey, setConfirmKey] = useState("");
-  const [ackReplace, setAckReplace] = useState(false);
-  const [forceSmallChange, setForceSmallChange] = useState(false);
-
-  // Derived checks
-  const bothEntered = newKey.length > 0 && confirmKey.length > 0;
-  const matches = bothEntered && newKey === confirmKey;
-
-  const distanceFromCurrent = useMemo(() => {
-    if (!apiKey || !newKey) return Infinity;
-    return levenshtein(apiKey, newKey);
-  }, [apiKey, newKey]);
-
-  // Treat 1–2 edits as suspicious (likely a misclick/mistype)
-  const SMALL_CHANGE_THRESHOLD = 2;
-  const suspiciousSmallEdit =
-    isFinite(distanceFromCurrent) &&
-    distanceFromCurrent <= SMALL_CHANGE_THRESHOLD;
-
-  const diff = useMemo(() => {
-    if (!apiKey || !newKey) return null;
-    return firstDiff(apiKey, newKey);
-  }, [apiKey, newKey]);
-
-  const canSave =
-    matches && ackReplace && (!suspiciousSmallEdit || forceSmallChange);
-
-  const onOpenChange = (next: boolean) => {
-    setOpen(next);
-    if (next) {
-      // reset staging state on open
-      setNewKey("");
-      setConfirmKey("");
-      setAckReplace(false);
-      setForceSmallChange(false);
-    }
-  };
-
-  const handleSave = () => {
-    if (!canSave) return;
-    setApiKey(newKey);
-    setOpen(false);
-  };
 
   return (
     <Card>
@@ -100,161 +54,261 @@ export function ModelProviderCard() {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        {/* Provider */}
-        <div className="space-y-2">
-          <Select value={modelProvider} onValueChange={setModelProvider}>
-            <SelectTrigger
-              id="modelProvider"
-              className="w-full dark:bg-background text-base"
-            >
-              <SelectValue
-                placeholder={t("modelProvider.selectPlaceholder")}
-              />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="openai">
-                {t("modelProvider.openai")}
-              </SelectItem>
-              <SelectItem disabled value="google-gemini-2.5-flash">
-                {t("modelProvider.gemini")}
-              </SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* API Key - read-only with explicit Edit flow */}
-        <div className="space-y-2">
-          <Label htmlFor="apiKey" className="text-lg">
-            {t("apiKey.title")}
-          </Label>
-          <div className="flex items-center gap-3">
-            <Input
-              id="apiKey"
-              type="text"
-              className="text-base bg-background"
-              value={maskKey(apiKey)}
-              readOnly
-              aria-readonly
-              title={t("apiKey.modalDescription")}
-            />
-            <Dialog open={open} onOpenChange={onOpenChange}>
-              <DialogTrigger asChild>
-                <Button type="button" variant="secondary">
-                  {t("apiKey.editButton")}
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-lg">
-                <DialogHeader>
-                  <DialogTitle>{t("apiKey.modalTitle")}</DialogTitle>
-                  <DialogDescription className="text-base">
-                    {t("apiKey.modalDescription")}
-                  </DialogDescription>
-                </DialogHeader>
-
-                {/* New key */}
-                <div className="space-y-2">
-                  <Label htmlFor="newKey" className="text-base">
-                    {t("apiKey.newKeyLabel")}
-                  </Label>
-                  <Input
-                    id="newKey"
-                    type="password"
-                    value={newKey}
-                    onChange={(e) => setNewKey(e.target.value)}
-                    placeholder={t("apiKey.newKeyPlaceholder")}
-                    autoComplete="off"
-                  />
-                </div>
-
-                {/* Confirm key */}
-                <div className="space-y-2">
-                  <Label htmlFor="confirmKey" className="text-base">
-                    {t("apiKey.confirmKeyLabel")}
-                  </Label>
-                  <Input
-                    id="confirmKey"
-                    type="password"
-                    value={confirmKey}
-                    onChange={(e) => setConfirmKey(e.target.value)}
-                    placeholder={t("apiKey.confirmKeyPlaceholder")}
-                    autoComplete="off"
-                  />
-                  {bothEntered && !matches && (
-                    <p className="text-sm text-destructive mt-1">
-                      {t("apiKey.mismatchError")}
-                    </p>
-                  )}
-                </div>
-
-                {/* Small-change guard */}
-                {apiKey && newKey && suspiciousSmallEdit && (
-                  <div className="rounded-md border border-amber-600/40 bg-amber-500/10 p-3">
-                    <p className="text-sm font-medium text-amber-600">
-                      {t("apiKey.smallChangeWarning", {
-                        count: distanceFromCurrent,
-                      })}
-                    </p>
-                    {diff && (
-                      <div className="text-sm text-muted-foreground mt-1 space-y-0.5">
-                        <p>
-                          {t("apiKey.firstDifference", { index: diff.index })}
-                        </p>
-                        <p className="font-mono">
-                          {t("apiKey.oldKeyPreview", { value: diff.left })}
-                        </p>
-                        <p className="font-mono">
-                          {t("apiKey.newKeyPreview", { value: diff.right })}
-                        </p>
-                      </div>
-                    )}
-                    <div className="flex items-center gap-2 mt-2">
-                      <Switch
-                        id="forceSmall"
-                        checked={forceSmallChange}
-                        onCheckedChange={setForceSmallChange}
-                        aria-label={t("apiKey.ariaOverrideSmallChange")}
-                      />
-                      <Label htmlFor="forceSmall" className="text-sm">
-                        {t("apiKey.forceSaveLabel")}
-                      </Label>
-                    </div>
-                  </div>
-                )}
-
-                {/* Acknowledgement */}
-                <div className="flex items-center gap-2">
-                  <Switch
-                    id="ackReplace"
-                    checked={ackReplace}
-                    onCheckedChange={setAckReplace}
-                    aria-label={t("apiKey.ariaAcknowledgeReplace")}
-                  />
-                  <Label htmlFor="ackReplace" className="text-sm">
-                    {t("apiKey.acknowledgeReplace")}
-                  </Label>
-                </div>
-
-                <DialogFooter className="mt-2">
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    onClick={() => setOpen(false)}
-                  >
-                    {t("apiKey.cancelButton")}
-                  </Button>
-                  <Button
-                    type="button"
-                    onClick={handleSave}
-                    disabled={!canSave}
-                  >
-                    {t("apiKey.saveButton")}
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-          </div>
-        </div>
+        <ProviderSelect
+          t={t}
+          modelProvider={modelProvider}
+          onChange={setModelProvider}
+        />
+        <ApiKeySection t={t} apiKey={apiKey} onSave={setApiKey} />
       </CardContent>
     </Card>
+  );
+}
+
+function ProviderSelect({
+  t,
+  modelProvider,
+  onChange,
+}: {
+  t: SettingsTranslator;
+  modelProvider: string;
+  onChange: (value: string) => void;
+}) {
+  return (
+    <div className="space-y-2">
+      <Select value={modelProvider} onValueChange={onChange}>
+        <SelectTrigger
+          id="modelProvider"
+          className="w-full dark:bg-background text-base"
+        >
+          <SelectValue placeholder={t("modelProvider.selectPlaceholder")} />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="openai">{t("modelProvider.openai")}</SelectItem>
+          <SelectItem disabled value="google-gemini-2.5-flash">
+            {t("modelProvider.gemini")}
+          </SelectItem>
+        </SelectContent>
+      </Select>
+    </div>
+  );
+}
+
+function ApiKeySection({
+  t,
+  apiKey,
+  onSave,
+}: {
+  t: SettingsTranslator;
+  apiKey: string | null;
+  onSave: (value: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className="space-y-2">
+      <Label htmlFor="apiKey" className="text-lg">
+        {t("apiKey.title")}
+      </Label>
+      <div className="flex items-center gap-3">
+        <Input
+          id="apiKey"
+          type="text"
+          className="text-base bg-background"
+          value={maskKey(apiKey)}
+          readOnly
+          aria-readonly
+          title={t("apiKey.modalDescription")}
+        />
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogTrigger asChild>
+            <Button type="button" variant="secondary">
+              {t("apiKey.editButton")}
+            </Button>
+          </DialogTrigger>
+          <ApiKeyDialogContent
+            t={t}
+            apiKey={apiKey}
+            open={open}
+            onClose={() => setOpen(false)}
+            onSave={onSave}
+          />
+        </Dialog>
+      </div>
+    </div>
+  );
+}
+
+function ApiKeyDialogContent({
+  t,
+  apiKey,
+  open,
+  onClose,
+  onSave,
+}: {
+  t: SettingsTranslator;
+  apiKey: string | null;
+  open: boolean;
+  onClose: () => void;
+  onSave: (value: string) => void;
+}) {
+  const [newKey, setNewKey] = useState("");
+  const [confirmKey, setConfirmKey] = useState("");
+  const [ackReplace, setAckReplace] = useState(false);
+  const [forceSmallChange, setForceSmallChange] = useState(false);
+
+  useEffect(() => {
+    if (open) {
+      setNewKey("");
+      setConfirmKey("");
+      setAckReplace(false);
+      setForceSmallChange(false);
+    }
+  }, [open]);
+
+  const bothEntered = newKey.length > 0 && confirmKey.length > 0;
+  const matches = bothEntered && newKey === confirmKey;
+
+  const distanceFromCurrent = useMemo(() => {
+    if (!apiKey || !newKey) return Infinity;
+    return levenshtein(apiKey, newKey);
+  }, [apiKey, newKey]);
+
+  const diff = useMemo(() => {
+    if (!apiKey || !newKey) return null;
+    return firstDiff(apiKey, newKey);
+  }, [apiKey, newKey]);
+
+  const SMALL_CHANGE_THRESHOLD = 2;
+  const suspiciousSmallEdit =
+    isFinite(distanceFromCurrent) &&
+    distanceFromCurrent <= SMALL_CHANGE_THRESHOLD;
+
+  const canSave =
+    matches && ackReplace && (!suspiciousSmallEdit || forceSmallChange);
+
+  const handleSave = () => {
+    if (!canSave) return;
+    onSave(newKey);
+    onClose();
+  };
+
+  return (
+    <DialogContent className="sm:max-w-lg">
+      <DialogHeader>
+        <DialogTitle>{t("apiKey.modalTitle")}</DialogTitle>
+        <DialogDescription className="text-base">
+          {t("apiKey.modalDescription")}
+        </DialogDescription>
+      </DialogHeader>
+
+      <div className="space-y-2">
+        <Label htmlFor="newKey" className="text-base">
+          {t("apiKey.newKeyLabel")}
+        </Label>
+        <Input
+          id="newKey"
+          type="password"
+          value={newKey}
+          onChange={(e) => setNewKey(e.target.value)}
+          placeholder={t("apiKey.newKeyPlaceholder")}
+          autoComplete="off"
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="confirmKey" className="text-base">
+          {t("apiKey.confirmKeyLabel")}
+        </Label>
+        <Input
+          id="confirmKey"
+          type="password"
+          value={confirmKey}
+          onChange={(e) => setConfirmKey(e.target.value)}
+          placeholder={t("apiKey.confirmKeyPlaceholder")}
+          autoComplete="off"
+        />
+        {bothEntered && !matches && (
+          <p className="text-sm text-destructive mt-1">
+            {t("apiKey.mismatchError")}
+          </p>
+        )}
+      </div>
+
+      {apiKey && newKey && suspiciousSmallEdit && (
+        <SmallChangeWarning
+          t={t}
+          distanceFromCurrent={distanceFromCurrent}
+          diff={diff}
+          forceSmallChange={forceSmallChange}
+          onForceChange={setForceSmallChange}
+        />
+      )}
+
+      <div className="flex items-center gap-2">
+        <Switch
+          id="ackReplace"
+          checked={ackReplace}
+          onCheckedChange={setAckReplace}
+          aria-label={t("apiKey.ariaAcknowledgeReplace")}
+        />
+        <Label htmlFor="ackReplace" className="text-sm">
+          {t("apiKey.acknowledgeReplace")}
+        </Label>
+      </div>
+
+      <DialogFooter className="mt-2">
+        <Button type="button" variant="ghost" onClick={onClose}>
+          {t("apiKey.cancelButton")}
+        </Button>
+        <Button type="button" onClick={handleSave} disabled={!canSave}>
+          {t("apiKey.saveButton")}
+        </Button>
+      </DialogFooter>
+    </DialogContent>
+  );
+}
+
+function SmallChangeWarning({
+  t,
+  distanceFromCurrent,
+  diff,
+  forceSmallChange,
+  onForceChange,
+}: {
+  t: SettingsTranslator;
+  distanceFromCurrent: number;
+  diff: ReturnType<typeof firstDiff>;
+  forceSmallChange: boolean;
+  onForceChange: (value: boolean) => void;
+}) {
+  return (
+    <div className="rounded-md border border-amber-600/40 bg-amber-500/10 p-3">
+      <p className="text-sm font-medium text-amber-600">
+        {t("apiKey.smallChangeWarning", { count: distanceFromCurrent })}
+      </p>
+      {diff && (
+        <div className="text-sm text-muted-foreground mt-1 space-y-0.5">
+          <p>{t("apiKey.firstDifference", { index: diff.index })}</p>
+          <p className="font-mono">
+            {t("apiKey.oldKeyPreview", { value: diff.left })}
+          </p>
+          <p className="font-mono">
+            {t("apiKey.newKeyPreview", { value: diff.right })}
+          </p>
+        </div>
+      )}
+      <div className="flex items-center gap-2 mt-2">
+        <Switch
+          id="forceSmall"
+          checked={forceSmallChange}
+          onCheckedChange={onForceChange}
+          aria-label={t("apiKey.ariaOverrideSmallChange")}
+        />
+        <Label htmlFor="forceSmall" className="text-sm">
+          {t("apiKey.forceSaveLabel")}
+        </Label>
+      </div>
+    </div>
   );
 }

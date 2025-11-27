@@ -258,6 +258,9 @@ const PrimaryButton = React.memo(
     onHover: () => void;
     volume?: number;
   }) {
+
+    const t = useTranslations("CommandForm");
+
     return (
       <motion.div
         layout="position"
@@ -298,9 +301,13 @@ const PrimaryButton = React.memo(
               <Lock strokeWidth={2} /> {tooltip}
             </p>
             <p className="text-xs text-muted-foreground">
-              *{t("tooltipPrivacyLine1")}
+              *{t("tooltipPrivacyLine1", {
+                default: "Processed by your chosen model.",
+              })}
               <br />
-              {t("tooltipPrivacyLine2")}
+              {t("tooltipPrivacyLine2", {
+                default: "All else stays in-browser.",
+              })}
             </p>
           </TooltipContent>
         </Tooltip>

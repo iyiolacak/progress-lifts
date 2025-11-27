@@ -28,8 +28,8 @@ interface SettingsSlice {
   shareDiagnostics: boolean;
   setShareDiagnostics: (share: boolean) => void;
 
-  entryFormPosition: "below" | "above";
-  setEntryFormPosition: (position: "below" | "above") => void;
+  entryFormPosition: "top" | "bottom";
+  setEntryFormPosition: (position: "top" | "bottom") => void;
 }
 // --- Combined AppSettingsStore Type ---
 

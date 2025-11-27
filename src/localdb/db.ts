@@ -13,10 +13,15 @@ import { DATABASE_NAME, DEFAULT_CONTEXT_ENTRIES } from "./dbConstants";
 import { jobMethods, jobStatics } from "./job/jobApi";
 import { entryMethods, entryStatics } from "./entry/entriesApi";
 import { AppDatabase, Collections } from "./types/types";
+import { RxDBDevModePlugin } from "rxdb/plugins/dev-mode";
 
 addRxPlugin(RxDBMigrationSchemaPlugin);
 addRxPlugin(RxDBLeaderElectionPlugin);
 addRxPlugin(RxDBQueryBuilderPlugin);
+
+if (process.env.NODE_ENV === 'development') {
+  addRxPlugin(RxDBDevModePlugin);
+}
 
 //
 // Architecture:
@@ -59,7 +64,7 @@ async function createDatabase(): Promise<AppDatabase> {
 
   let db: AppDatabase;
   try {
-    db = await createRxDatabase<Collections>({ name: DATABASE_NAME, storage });
+    db = await createRxDatabase<Collections>({ name: DATABASE_NAME, storage, ignoreDuplicate: true });
     await db.addCollections({
       entries: {
         schema: entrySchemaLiteral,

@@ -11,13 +11,7 @@ interface PositionOptionProps extends React.HTMLAttributes<HTMLDivElement> {
   checked: boolean;
 }
 
-const EntryFormPositionSetting = ({
-  posPreference,
-  setPosPreference,
-}: {
-  posPreference: "top" | "bottom";
-  setPosPreference: (pos: "top" | "bottom") => void;
-}) => {
+const EntryFormPositionSetting = () => {
   const { pos, setPos, isTop } = useEntryFormPosition();
   console.log(pos, isTop)
   return (
@@ -33,7 +27,6 @@ const EntryFormPositionSetting = ({
       </div>
       {/* options */}
       <div className="flex gap-3">
-        <RadioGroup
         <PositionOption pos="top" checked={isTop} onClick={() => setPos("top")}/>
         <PositionOption pos="bottom" checked={!isTop} onClick={() => setPos("bottom")}/>
 
@@ -52,13 +45,13 @@ const PositionOption = ({
   ...rest
 }: PositionOptionProps) => {
   return (
-    <div className="">
+    <div {...rest}>
 
     <div
       className={cn(
         "w-52 h-32 cursor-pointer hover:bg-white/20 bg-product-card border-2 rounded-lg flex p-3 justify-center",
         checked ? "border-foreground" : "",
-        pos === "top" ? "items-start" : "items-end"
+        pos === "top" ? "items-start" : "items-end",
       )}
     >
       <div className="relative py-3 w-full bg-foreground/40 rounded-lg" />

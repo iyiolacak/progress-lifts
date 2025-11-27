@@ -34,7 +34,7 @@ export function VoiceInputCard() {
         <Switch
           checked={saveVoice}
           onCheckedChange={setSaveVoice}
-          aria-label="Toggle audio retention"
+          aria-label={t("voiceInput.toggleAria")}
         />
       </CardContent>
     </Card>

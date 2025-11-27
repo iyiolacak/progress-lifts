@@ -6,7 +6,7 @@ import { useHoverClickSounds } from "@/lib/sfx";
 
 const buttonVariants = cva(
   // root: no active scale on container; add group to target child label
-  "group inline-flex dark:h-12 font-medium cursor-pointer items-center justify-center gap-1 whitespace-nowrap rounded-sm text-[21px] transition-colors disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive select-none",
+  "group inline-flex dark:h-12 font-inter-16-700 cursor-pointer items-center justify-center gap-1 whitespace-nowrap rounded-sm ransition-colors disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive select-none",
   {
     variants: {
       variant: {
@@ -50,7 +50,7 @@ function wrapTextNodes(children: React.ReactNode) {
       return (
         <span
           className={cn(
-            "btn-label inline-block will-change-transform transition-transform",
+            "font-inter-16-700 tracking-normal inline-block will-change-transform transition-transform",
             "motion-reduce:transform-none motion-reduce:transition-none",
             "group-hover:scale-[1.03] group-active:scale-[0.96]",
             "duration-75",
