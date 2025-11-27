@@ -26,6 +26,8 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { useEntryFormPosition } from "../hooks/useEntryFormPosition";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 
 const navItems = [
   {
@@ -111,37 +113,30 @@ export function SidebarNav() {
               <SidebarMenuItem>
                 <SidebarMenuButton
                   onClick={() => setSearchOpen(true)}
-                  className="justify-between rounded-full bg-muted/70 pl-3 pr-4 text-sm"
+                  className="justify-between h-11 rounded-lg bg-muted/70 pl-3 pr-4 text-sm"
                 >
-                  <span className="flex items-center gap-2 text-muted-foreground">
-                    <Search className="h-4 w-4" />
-                    <span>Search tasks or pages</span>
-                  </span>
-                  <span className="text-[11px] text-muted-foreground/80">
-                    Ctrl/Cmd + K or P
-                  </span>
-                </SidebarMenuButton>
+        <Search className="h-4 w-4" />
+        Search tasks...
+        <kbd className="ml-auto pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded bg-background px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
+          <span className="text-xs">⌘</span>K
+        </kbd>
+                      </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroup>
-
+          <Separator className="opacity-50"/>
           <SidebarGroup>
-            <SidebarGroupLabel>Navigation</SidebarGroupLabel>
-            <SidebarMenu>
+            {/* <SidebarGroupLabel>Navigation</SidebarGroupLabel> */}
+            <SidebarMenu className="gap-2 ml-2">
               {navItems.map((item) => {
                 const Icon = item.icon;
                 const isActive =
                   pathname === item.href ||
                   pathname.startsWith(`${item.href}/`);
                 return (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild isActive={isActive}>
-                      <Link href={item.href}>
-                        <Icon />
-                        <span>{item.title}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
+                  <div key={item.title}>
+                    <div className="bg-product-card rounded-lg size-14"></div>
+                  </div>
                 );
               })}
             </SidebarMenu>

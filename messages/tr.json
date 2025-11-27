@@ -3,10 +3,10 @@
     "title": "Merhaba Dünya!"
   },
   "CommandForm": {
-    "placeholder": "Produfy'nin sırada ne yapmasını istediğinizi söyleyin — adımları paylaşın, bağlamı yapıştırın veya mikrofona dokunup anlatın.",
-    "inputLabel": "Produfy'nin neyi geliştirmesini veya düzeltmesini istiyorsunuz?",
+    "placeholder": "Yapman gereken veya bu hafta başardığın bir şeyler…",
+    "inputLabel": "Progress Lifts'in neyi geliştirmesini veya düzeltmesini istiyorsunuz?",
     "tooltipSend": "Modele özel olarak gönder*",
-    "tooltipRecording": "Kaydediliyor... yerel olarak kaydedildi*",
+    "tooltipRecording": "Kaydediliyor... yerel olarak kaydedilir*",
     "tooltipRecord": "Özel bir sesli not kaydet*",
     "listening": "Dinleniyor...",
     "tooltipBusy": "Whisper ile sesten yazılıyor...",

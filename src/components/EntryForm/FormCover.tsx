@@ -17,8 +17,8 @@ export function FormCover({ active, label = "Listening…", className, children 
       aria-live="polite"
       aria-label={label}
       className={cn(
-        "absolute inset-0 z-50 transition-opacity duration-150",
-        active ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none",
+        "absolute inset-0 z-20 transition-opacity duration-150 pointer-events-none",
+        active ? "opacity-100" : "opacity-0",
         // brand it via shadcn theme primary
         "bg-primary",
         className

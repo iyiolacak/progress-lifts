@@ -3,7 +3,7 @@
     "title": "Hello world!"
   },
   "CommandForm": {
-    "placeholder": "Tell PL what to build next—share steps, paste context, or tap the mic to narrate.",
+    "placeholder": "Add something you did or need to do. You’ll see.",
     "inputLabel": "What do you want Produfy to build or fix?",
     "tooltipSend": "Send privately to model*",
     "tooltipRecording": "Recording... saved locally*",

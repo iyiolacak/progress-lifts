@@ -156,7 +156,7 @@ export const EntryTextarea = React.forwardRef<CommandTextareaHandle, CommandText
         `
         relative z-10 w-full rounded-md border-none bg-input-dark text-gray-100
         focus:border-product focus:ring-1 focus:ring-product
-        resize-none py-3 px-3 pr-12 overflow-hidden
+        resize-none py-3 px-3 pr-21 overflow-hidden
         dark:text-lg md:dark:text-xl dark:font-medium
         !min-h-14 overflow-y-auto
         transition-all duration-200 ease-out

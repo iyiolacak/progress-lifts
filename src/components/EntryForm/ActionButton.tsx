@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { Microphone } from "iconoir-react/solid";
-import { ArrowUp, Lock, Trash, Square } from "iconoir-react/regular";
+import { ArrowUp, Lock, Trash, Square, Check, X } from "iconoir-react/regular";
 import {
   AnimatePresence,
   motion,
@@ -20,6 +20,7 @@ import {
 } from "framer-motion";
 import { useHoverClickSounds } from "@/lib/sfx";
 import { useTranslations } from "next-intl";
+import { Cross, XIcon } from "lucide-react";
 
 /* ------------------------------------------------------------------------------------------ */
 /* Types                                                                                       */
@@ -81,15 +82,12 @@ const RecordingGlow = React.memo(function RecordingGlow({
     <AnimatePresence>
       {active && (
         <motion.span
-          className="absolute inset-0 z-0 rounded-lg bg-white/30"
-          initial={{ opacity: 0, scale: 1 }}
-          animate={{
-            opacity: 1,
-            // scale is handled via style prop below
-          }}
+          className="absolute inset-0 z-0 rounded-lg bg-white/10"
+          initial={{ opacity: 0, scale: 0.96 }}
+          animate={{ opacity: 1 }}
           style={{ scale }}
           exit={{ opacity: 0, scale: 1 }}
-          transition={{ duration: 0.12 }}
+          transition={{ duration: 0.16, ease: [0.4, 0, 0.2, 1] }}
         />
       )}
     </AnimatePresence>
@@ -169,7 +167,7 @@ const IconSwitcher = React.memo(
           }}
           transition={{ duration: 0.18, ease: [0.4, 0, 0.2, 1] }}
         >
-          <StopIcon strokeWidth={strokeWidth} className="h-5 w-5" />
+          <Check strokeWidth={strokeWidth} className="h-5 w-5" />
         </motion.div>
 
         <motion.div
@@ -215,18 +213,16 @@ const CancelButton = React.memo(function CancelButton({
     >
       <Tooltip delayDuration={150}>
         <TooltipTrigger asChild>
-          <Button
-            variant="ghost"
-            size="icon"
+          <button
             onClick={() => {
               sfx.onClick();
               onCancel();
             }}
-            className="h-10 w-10 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+            className="text-center flex items-center justify-center scale-90 text-foreground h-full w-12 bg-transparent rounded-lg hover:bg-foreground/20 hover:text-white"
             aria-label={label}
           >
-            <Trash strokeWidth={2} className="h-5 w-5" />
-          </Button>
+            <XIcon strokeWidth={2} className="h-5 w-5" />
+          </button>
         </TooltipTrigger>
         <TooltipContent side="bottom">
           <p>{label}</p>
@@ -258,7 +254,6 @@ const PrimaryButton = React.memo(
     onHover: () => void;
     volume?: number;
   }) {
-
     const t = useTranslations("CommandForm");
 
     return (
@@ -275,9 +270,12 @@ const PrimaryButton = React.memo(
               disabled={mode === "busy"}
               aria-label={tooltip}
               className={cn(
-                "group relative flex h-10 items-center justify-center rounded-lg bg-product p-0 text-xl text-background shadow-lg",
+                "group relative flex h-10 items-center justify-center rounded-lg p-0 text-xl shadow-lg",
                 "transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-                "hover:bg-product/90 active:scale-95 active:bg-background active:text-product"
+                "active:scale-95",
+                isRecording
+                  ? "bg-foreground scale-90 text-background hover:bg-white"
+                  : "bg-product text-background hover:bg-product/90 active:bg-background active:text-product"
               )}
               // Width grows only when not recording and canSubmit
               animate={{ width: !isRecording && canSubmit ? "5rem" : "3.5rem" }}
@@ -301,7 +299,8 @@ const PrimaryButton = React.memo(
               <Lock strokeWidth={2} /> {tooltip}
             </p>
             <p className="text-xs text-muted-foreground">
-              *{t("tooltipPrivacyLine1", {
+              *
+              {t("tooltipPrivacyLine1", {
                 default: "Processed by your chosen model.",
               })}
               <br />
@@ -352,7 +351,8 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
 
   const tooltip = React.useMemo(() => {
     if (tooltipMain) return tooltipMain;
-    if (mode === "busy") return (t as (key: string) => string)?.("tooltipBusy") ?? "Working…";
+    if (mode === "busy")
+      return (t as (key: string) => string)?.("tooltipBusy") ?? "Working…";
     if (mode === "stop") return t("tooltipRecording");
     if (mode === "submit") return t("tooltipSend");
     return t("tooltipRecord");
@@ -377,23 +377,27 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
         className
       )}
     >
-      {/* Cancel (only while recording) */}
-      <AnimatePresence initial={false}>
-        {isRecording && (
-          <CancelButton onCancel={onCancel} label={cancelLabel} />
-        )}
-      </AnimatePresence>
+      <div>
+        <div className={cn("flex flex-row gap-x-1 py-0.5 px-2", isRecording ? "opacity-100 bg-background/70 transition-all rounded-lg border shadow-xs" : "")}>
+          {/* Cancel (only while recording) */}
+          <AnimatePresence initial={false}>
+            {isRecording && (
+              <CancelButton onCancel={onCancel} label={cancelLabel} />
+            )}
+          </AnimatePresence>
 
-      {/* Primary button (width + icon transitions) */}
-      <PrimaryButton
-        mode={mode}
-        canSubmit={canSubmit}
-        isRecording={isRecording}
-        tooltip={tooltip}
-        onPrimary={handlePrimaryAction}
-        onHover={sfx.onMouseEnter}
-        volume={volume}
-      />
+          {/* Primary button (width + icon transitions) */}
+          <PrimaryButton
+            mode={mode}
+            canSubmit={canSubmit}
+            isRecording={isRecording}
+            tooltip={tooltip}
+            onPrimary={handlePrimaryAction}
+            onHover={sfx.onMouseEnter}
+            volume={volume}
+          />
+        </div>
+      </div>
     </div>
   );
 };

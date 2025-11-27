@@ -39,24 +39,9 @@ export function EntryFormView({ machine }: EntryFormViewProps) {
   const placeholder = isRecording ? t("listening") : t("placeholder");
   const handleSubmit = React.useCallback(() => { if (canSubmit) submit(); }, [canSubmit, submit]);
 
-  // Make the underlying row inert while overlay blocks it (prevents focus/AT leaks)
-  const rowRef = React.useRef<HTMLDivElement>(null);
-  React.useEffect(() => {
-    const el = rowRef.current;
-    if (!el) return;
-    if (overlayActive) {
-      (el as any).inert = true;
-      el.setAttribute("aria-hidden", "true");
-      return () => {
-        delete (el as any).inert;
-        el.removeAttribute("aria-hidden");
-      };
-    }
-  }, [overlayActive]);
-
   return (
     <div className="w-full max-w-2xl mx-auto">
-      <div ref={rowRef} className="relative flex w-full bg-background md:max-w-2xl rounded-xl overflow-hidden">
+      <div className="relative flex w-full bg-background md:max-w-2xl rounded-xl overflow-hidden">
         {/* Content stays unchanged; overlay will sit on top when active */}
         <EntryTextarea
           value={text}
@@ -79,6 +64,7 @@ export function EntryFormView({ machine }: EntryFormViewProps) {
           onStop={stopRecording}
           onSubmit={handleSubmit}
           onCancel={cancelRecording}
+          volume={machine.volume}
         />
 
         {/* The brand cover; no buttons visible while active */}
