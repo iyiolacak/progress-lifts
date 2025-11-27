@@ -93,7 +93,8 @@ export function SidebarNav() {
       <Sidebar
         collapsible="icon"
         className={cn(
-          "z-12 border-border/80",
+          "z-12 border-border/80 overflow-y-hidden",
+          isTop && "md:pt-[var(--navbar-height)]",
           isTop &&
             "md:[&_[data-slot=sidebar-container]]:top-[var(--navbar-height)] md:[&_[data-slot=sidebar-container]]:h-[calc(100svh-var(--navbar-height))]"
         )}

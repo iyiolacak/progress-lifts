@@ -11,7 +11,7 @@ const Header = () => {
   return (
     <header
       className={cn(
-        "relative w-full z-9999 bg-background h-[var(--navbar-height)]",
+        "overflow-y-hidden relative w-full z-9999 bg-background h-[var(--navbar-height)]",
         isTop ? "sticky top-0" : "fixed inset-x-0 bottom-0"
       )}
     >
