@@ -47,7 +47,7 @@ export function EntryFormView({ machine }: EntryFormViewProps) {
     submit,
     retry,
     dismissError,
-    overlayActive,          // <-- new
+    overlayActive,
   } = machine;
 
   const isDisabled = isBusy || isRecording;

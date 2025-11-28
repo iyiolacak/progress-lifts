@@ -19,7 +19,21 @@ interface LocaleSlice {
   locale: string;
   setLocale: (locale: string) => void;
 }
+type Modifier = "ctrl" | "meta" | "alt" | "shift";
+// meta: ⊞ Windows key or ⌘ Command key
+type Key = string;
+type ShortcutId = string;
+type ShortcutScope = "global" | "input-focused" | "app";
 
+export type ShortcutMeta = { 
+  id: string;
+  keys: { key: Key; modifiers?: Modifier[] }[];
+  description: string;
+  scope?: ShortcutScope;
+  enabled: boolean;
+  reserved?: boolean;
+}
+type OccupiedKeys = Record<string, ShortcutMeta>;
 interface SettingsSlice {
   modelProvider: "openai" | "google-gemini-2.5-flash";
   setModelProvider: (provider: "openai" | "google-gemini-2.5-flash") => void;
@@ -30,6 +44,8 @@ interface SettingsSlice {
 
   entryFormPosition: "top" | "bottom";
   setEntryFormPosition: (position: "top" | "bottom") => void;
+
+  // FOCUS SHORTCUTS SETTINGS
   enableEntryFocusShortcuts: boolean;
   setEnableEntryFocusShortcuts: (enabled: boolean) => void;
   focusShortcutSlash: boolean;
@@ -85,34 +101,43 @@ const createSettingsSlice: StateCreator<
   [],
   SettingsSlice
 > = (set) => ({
+  // MODEL preferences
   modelProvider: "openai",
   setModelProvider: (provider) => set({ modelProvider: provider }),
+  
+  // ===
+
+  // Privacy preferences
+
+    // VOICE preferences
   saveVoice: true,
   setSaveVoice: (save) => set({ saveVoice: save }),
+
+    // DIAGNOSTICS preferences
   shareDiagnostics: false,
   setShareDiagnostics: (share) => set({ shareDiagnostics: share }),
 
-  entryFormPosition: "below",
+  // ===
+
+  // LAYOUT preferences
+  entryFormPosition: "bottom",
   setEntryFormPosition: (position) => set({ entryFormPosition: position }),
 
+  // FOCUS SHORTCUTS preferences
   enableEntryFocusShortcuts: true,
   setEnableEntryFocusShortcuts: (enabled) =>
     set({ enableEntryFocusShortcuts: enabled }),
   focusShortcutSlash: true,
-  setFocusShortcutSlash: (enabled) =>
-    set({ focusShortcutSlash: enabled }),
+  setFocusShortcutSlash: (enabled) => set({ focusShortcutSlash: enabled }),
   focusShortcutEnter: true,
-  setFocusShortcutEnter: (enabled) =>
-    set({ focusShortcutEnter: enabled }),
+  setFocusShortcutEnter: (enabled) => set({ focusShortcutEnter: enabled }),
   focusShortcutTypeToFocus: true,
   setFocusShortcutTypeToFocus: (enabled) =>
     set({ focusShortcutTypeToFocus: enabled }),
   focusShortcutCmdJ: true,
-  setFocusShortcutCmdJ: (enabled) =>
-    set({ focusShortcutCmdJ: enabled }),
+  setFocusShortcutCmdJ: (enabled) => set({ focusShortcutCmdJ: enabled }),
   focusAutoOnLoad: true,
-  setFocusAutoOnLoad: (enabled) =>
-    set({ focusAutoOnLoad: enabled }),
+  setFocusAutoOnLoad: (enabled) => set({ focusAutoOnLoad: enabled }),
 });
 
 // --- Main AppSettings Store ---

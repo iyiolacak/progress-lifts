@@ -33,7 +33,7 @@ export function entryStatics() {
       }
     ) {
       const createdAt = Date.now();
-      const id = crypto.randomUUID();
+      const id = crypto.randomUUID()
       const givenContext = await (this as EntryCollectionWithHelpers).getLastEntryIds(
         createdAt,
         DEFAULT_CONTEXT_ENTRIES

@@ -26,9 +26,9 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { useEntryFormPosition } from "../hooks/useEntryFormPosition";
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import ProdAtLocalhostLogo from "@/components/Logo";
+import { KeyboardShortcuts } from "@/components/KeyboardShortcuts";
 
 const navItems = [
   {
@@ -129,6 +129,9 @@ export function SidebarNav() {
                       </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
+          </SidebarGroup>
+          <SidebarGroup className="pt-0">
+            <KeyboardShortcuts showHintCard />
           </SidebarGroup>
           <Separator className="opacity-50"/>
           <SidebarGroup>
