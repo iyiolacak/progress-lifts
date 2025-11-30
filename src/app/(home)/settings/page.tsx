@@ -205,8 +205,13 @@ const NavButton: React.FC<NavButtonProps> = ({ item, isActive, onClick }) => {
       aria-pressed={isActive}
       aria-current={isActive ? "true" : undefined}
     >
-      <AppIcon name={item.icon} size={18} className="opacity-80" aria-hidden />
-      <span className="text-[15px] leading-tight">{item.label}</span>
+      <AppIcon
+        name={item.icon}
+        size={18}
+        className="invert opacity-80"
+        aria-hidden
+      />
+      <span className="sidebar-text">{item.label}</span>
     </button>
   );
 };
@@ -230,9 +235,7 @@ export default function PrivacySettings() {
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
 
         const top = visible[0];
-        const nextKey = top?.target.getAttribute("data-key") as
-          | TabKey
-          | null;
+        const nextKey = top?.target.getAttribute("data-key") as TabKey | null;
 
         if (nextKey && nextKey !== active) {
           setActive(nextKey);
@@ -332,7 +335,12 @@ export default function PrivacySettings() {
                 style={{ scrollMarginTop: scrollMargin }}
               >
                 <div className="flex items-center gap-2 text-foreground/80">
-                  <AppIcon name={section.icon} size={20} className="opacity-90" aria-hidden />
+                  <AppIcon
+                    name={section.icon}
+                    size={20}
+                    className="opacity-90 invert"
+                    aria-hidden
+                  />
                   <h2 className="text-xl font-semibold">{section.label}</h2>
                 </div>
                 {section.content}

@@ -130,6 +130,12 @@
   .paragraph-sm {
     @apply text-foreground/60 tracking-wider font-medium text-sm leading-6
   }
+  .title-sm {
+    @apply font-semibold tracking-normal text-foreground text-[17px]
+  }
+  .sidebar-text {
+    @apply font-medium tracking-normal text-foreground text-[17px]
+  }
 }
 
 @layer utilities {
