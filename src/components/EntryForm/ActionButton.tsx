@@ -274,7 +274,7 @@ const PrimaryButton = React.memo(
               disabled={mode === "busy"}
               aria-label={tooltip}
               className={cn(
-                "group relative flex h-10 items-center justify-center rounded-lg p-0 text-xl shadow-lg",
+                "group relative flex h-10 items-center justify-center rounded-sm p-0 text-xl shadow-lg",
                 "transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                 "active:scale-95",
                 isRecording

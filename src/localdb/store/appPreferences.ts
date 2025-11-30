@@ -19,21 +19,7 @@ interface LocaleSlice {
   locale: string;
   setLocale: (locale: string) => void;
 }
-type Modifier = "ctrl" | "meta" | "alt" | "shift";
-// meta: ⊞ Windows key or ⌘ Command key
-type Key = string;
-type ShortcutId = string;
-type ShortcutScope = "global" | "input-focused" | "app";
 
-export type ShortcutMeta = { 
-  id: string;
-  keys: { key: Key; modifiers?: Modifier[] }[];
-  description: string;
-  scope?: ShortcutScope;
-  enabled: boolean;
-  reserved?: boolean;
-}
-type OccupiedKeys = Record<string, ShortcutMeta>;
 interface SettingsSlice {
   modelProvider: "openai" | "google-gemini-2.5-flash";
   setModelProvider: (provider: "openai" | "google-gemini-2.5-flash") => void;

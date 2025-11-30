@@ -12,6 +12,8 @@ interface SettingRootType extends React.HTMLAttributes<HTMLDivElement> {
   description: string;
   variant?: SettingVariant
   children: React.ReactNode;
+  value: any;
+  onChange: (value: any) => void;
 }
 const SettingRoot = ({ title, description, variant = "switch", children }: SettingRootType) => {
   return (
@@ -50,9 +52,15 @@ const SettingOptionGroup = ({
   return <div className="flex gap-3">{children}</div>;
 };
 
-const SettingOptionItem = {};
+const SettingOptionItem = ({preferenceState: boolean}) => {
+  return (
 
-const PositionOption = ({
+  )
+};
+
+
+
+const ScreenPreviewButton = ({
   pos,
   checked,
 }: {

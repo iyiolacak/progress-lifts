@@ -5,12 +5,12 @@ import { Command } from "lucide-react";
 import { useShallow } from "zustand/react/shallow";
 
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
 import { Kbd } from "@/components/ui/kbd";
 import { cn } from "@/lib/utils";
 import { useAppSettings } from "@/localdb/store/appPreferences";
@@ -165,32 +165,30 @@ export function KeyboardShortcuts({
         </button>
       )}
 
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-2xl bg-background text-foreground shadow-xl shadow-black/25">
-          <DialogHeader className="space-y-2 text-left">
+      <Drawer open={open} onOpenChange={setOpen} direction="right">
+        <DrawerContent className="w-full  bg-transparent backdrop-blur-2xl border-l backdrop-saturate-200 text-foreground shadow-2xl shadow-black/30 md:min-w-2xl">
+          <DrawerHeader className="space-y-2 text-left">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-foreground/80 ring-1 ring-border/60">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-foreground/80 ">
                 <Command className="h-5 w-5" strokeWidth={1.4} />
               </div>
               <div>
-                <DialogTitle className="text-2xl font-semibold">
-                  Keyboard shortcuts
-                </DialogTitle>
-                <DialogDescription className="text-sm text-muted-foreground">
-                  Press{" "}
-                  <Kbd className="h-5 min-w-5 px-1 text-[11px]">?</Kbd> anytime
-                  to reopen this list.
-                </DialogDescription>
+                <DrawerTitle className="text-md tracking-wide font-medium">
+                  Keyboard shortcuts{" "}
+                  <span className="px-2 text-xs text-foreground/60">
+                    {isMac ? "Mac shortcuts" : "Windows/Linux shortcuts"}
+                  </span>
+                </DrawerTitle>
+                <DrawerDescription className="text-sm text-muted-foreground">
+                  Press <Kbd className="h-5 min-w-5 px-1 text-[11px]">?</Kbd>{" "}
+                  anytime to reopen this list.
+                </DrawerDescription>
               </div>
             </div>
-            <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-              <span className="rounded-md bg-muted/80 px-2 py-1">
-                {isMac ? "Showing Mac shortcuts" : "Showing Windows/Linux shortcuts"}
-              </span>
-            </div>
-          </DialogHeader>
+            <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground" />
+          </DrawerHeader>
 
-          <div className="flex flex-col gap-2">
+          <div className="flex max-h-[70vh] flex-col gap-2 overflow-y-auto px-4 pb-6">
             {shortcuts.map((shortcut, idx) => (
               <React.Fragment key={shortcut.title}>
                 {idx > 0 && <Separator className="bg-border/70" />}
@@ -198,8 +196,8 @@ export function KeyboardShortcuts({
               </React.Fragment>
             ))}
           </div>
-        </DialogContent>
-      </Dialog>
+        </DrawerContent>
+      </Drawer>
     </>
   );
 }
@@ -227,7 +225,7 @@ function ShortcutRow({
       )}
     >
       <div className="space-y-1">
-        <div className="text-[15px] font-semibold leading-tight">{title}</div>
+        <div className="text-[15px] font-medium tracking-wide">{title}</div>
         {description && (
           <p className="text-xs text-muted-foreground">{description}</p>
         )}
@@ -236,7 +234,7 @@ function ShortcutRow({
         {displayCombos.map((combo) => (
           <Kbd
             key={combo.join("+")}
-            className="h-6 px-2 text-[11px] leading-none uppercase"
+            className="h-7 px-2 text-foreground/80 text-[12px] leading-none uppercase"
           >
             {combo.join(" + ")}
           </Kbd>

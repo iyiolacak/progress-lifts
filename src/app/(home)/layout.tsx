@@ -29,12 +29,10 @@ export default function RootLayout({
               {/* ---------- Header ---------- */}
 
               {/* ---------- Main ---------- */}
-              <section
-                className={cn("flex-1 p-6 overflow-y-auto", !isTop && "pb-28")}
-              >
-                {children}
-                <Footer />
-              </section>
+                <div className="max-w-6xl mx-auto w-full space-y-8">
+                  {children}
+                  <Footer />
+                </div>
             </div>
           </SidebarInset>
         </div>

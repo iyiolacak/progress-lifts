@@ -152,6 +152,7 @@
   --color-eggshell: var(--eggshell);
   --color-product-gray: var(--product-gray);
   --color-product-card: var(--product-card);
+  --color-dialog-card: var(--dialog-card);
   --font-sans: var(--font-family-sans);
   --font-inter: var(--font-family-inter);
   --font-object: var(--font-family-alt);
@@ -241,7 +242,8 @@
   --background: #101012;
   --input-dark: #1e1f21;
   --product-gray: #474f54;
-  --product-card: #1f2023;
+  --product-card: #191a1c;
+  --dialog-card: #191a1c;
   --eggshell: #e0e0ce;
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
